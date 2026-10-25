@@ -154,19 +154,13 @@ body{padding-bottom:90px}
 .box{box-shadow:var(--raise)}
 .toast{background:#fff;color:var(--ink);box-shadow:var(--raise)}
 [data-t=project]{--fx:var(--fx-project)}
-[data-t=idea]{--fx:var(--fx-idea)}
-[data-t=dream]{--fx:var(--fx-dream)}
+[data-t=idea]{--fx:var(--fx-project)}
+[data-t=dream]{--fx:var(--fx-project)}
 .card[data-t],.card[data-t]:hover{box-shadow:var(--fx)}
 .card[data-t] .ph{background:transparent}
 .card[data-t] .blur{color:var(--ink);opacity:.72}
-/* Creations: solid white, hairline, tight shadow */
-.card[data-t=project] .im{border-bottom:1px solid var(--line)}
-/* Imagination: luminous white, wide soft glow, no outline */
-.card[data-t=idea],.card[data-t=idea]:hover{border-color:#fff;background:linear-gradient(160deg,#fff,#fafafa)}
-.card[data-t=idea] .im{background:linear-gradient(180deg,#fff,#f7f7f7)}
-/* Aspiration: embossed white, same material as the page, pressed-in preview */
-.card[data-t=dream],.card[data-t=dream]:hover{border-color:transparent;background:var(--bg)}
-.card[data-t=dream] .im{margin:10px 10px 0;border-radius:10px;box-shadow:var(--press)}
+/* all categories: solid white, hairline, tight shadow */
+.card[data-t] .im{border-bottom:1px solid var(--line)}
 .card.empty[data-t],.card.empty[data-t]:hover{box-shadow:none;background:transparent}
 #detail .dh{box-shadow:var(--fx)}
 #detail .lg{background:var(--bg);border:none;box-shadow:var(--press);color:var(--ink)}
