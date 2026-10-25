@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#faf8f4">
+<meta name="theme-color" content="#eef2f1">
 <meta name="description" content="Track your creations, imagination and aspirations in one place.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-v2.png">
@@ -15,7 +15,7 @@
 <link rel="icon" href="icons/icon-192-v2.png">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:light;--bg:#faf8f4;--card:#fff;--ink:#26231f;--mut:#8a857d;--g:#3a3733;--onG:#26231f;--soft:#f3efe7;--line:#ebe6dc;--red:#a07a5e}
+:root{color-scheme:light;--bg:#eef2f1;--card:#fbfcfb;--ink:#14272f;--mut:#5c6e74;--g:#235a75;--onG:#14272f;--soft:#e3eae8;--line:#d3dcd9;--red:#b0562a;--c-project:#2b6a87;--c-idea:#cc7339;--c-dream:#66895a;--t-project:#dde9ef;--t-idea:#f6e6d9;--t-dream:#e2ecdd}
 *{box-sizing:border-box;margin:0}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;padding-bottom:60px;-webkit-font-smoothing:antialiased}
 .in{max-width:960px;margin:0 auto;padding:0 20px}
@@ -134,6 +134,35 @@ body{padding-bottom:90px}
 .ph{background:var(--soft);color:#d3ccbe}
 .blur{width:100%;height:100%;padding:12px 14px;overflow:hidden;font-size:.78rem;line-height:1.45;color:var(--ink);opacity:.6;text-align:left;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical}
 .blur.empty{display:flex;align-items:center;justify-content:center;text-align:center;opacity:.35;font-style:italic}
+
+/* ====== colour system: three logo colours = three categories ====== */
+[data-t=project]{--c:var(--c-project);--tint:var(--t-project)}
+[data-t=idea]{--c:var(--c-idea);--tint:var(--t-idea)}
+[data-t=dream]{--c:var(--c-dream);--tint:var(--t-dream)}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--c-idea) 0 33.34%,var(--c-project) 33.34% 66.67%,var(--c-dream) 66.67%)}
+.card[data-t]{border-top:3px solid var(--c)}
+.card.empty[data-t]{border-top:1.5px dashed var(--c)}
+.card[data-t] .ph{background:var(--tint)}
+.card[data-t] .blur{color:var(--ink);opacity:.72}
+.sh[data-t] h2{display:flex;align-items:center;gap:10px}
+.sh[data-t] h2::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
+.sh[data-t] .plus{color:var(--c)}
+.bar .chip[data-k=all]{--c:var(--g);--tint:var(--soft)}
+.bar .chip[data-k=project]{--c:var(--c-project);--tint:var(--t-project)}
+.bar .chip[data-k=idea]{--c:var(--c-idea);--tint:var(--t-idea)}
+.bar .chip[data-k=dream]{--c:var(--c-dream);--tint:var(--t-dream)}
+.bar .chip.on{color:var(--c);background:var(--tint);border-color:transparent}
+#detail .dh{border-top:3px solid var(--c)}
+#detail .lg{background:var(--tint);color:var(--c)}
+#detail .tab.on{color:var(--c);border-bottom-color:var(--c)}
+#detail .ck input[type=checkbox]{accent-color:var(--c)}
+#detail .row .chip.on{background:var(--tint);border-color:var(--c);color:var(--c)}
+.bd[data-s]{font-weight:600}
+.bd[data-s="In progress"]{background:var(--t-project);color:var(--c-project)}
+.bd[data-s="On hold"]{background:var(--t-idea);color:#9a4f1f}
+.bd[data-s="Done"]{background:var(--t-dream);color:#42663a}
+#msave{background:var(--g);border-color:var(--g);color:#fff}
+#msave:hover{background:var(--ink);border-color:var(--ink)}
 </style>
 </head>
 <body>
@@ -299,9 +328,9 @@ function home(){
   let h='';
   h+=Object.entries(TYPES).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
     const items=Object.entries(D).filter(([,v])=>v.type===k).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
-    let c=items.map(([id,v])=>{const s=cnt(v);return `<div class="card" data-id="${id}"><div class="im${v.image?'':' ph'}">${v.image?`<img src="${v.image}" alt="">`:`<div class="blur${v.desc?'':' empty'}">${blurText(v)}</div>`}</div><div class="tx"><div class="nm">${esc(v.name)}</div></div></div>`}).join('');
-    if(!items.length)c=`<div class="card empty" data-new="${k}"><div class="im">${ic('plus',34)}</div><div class="tx"><div class="nm">Empty — click to add</div></div></div>`;
-    return `<div class="sh"><h2>${t.l}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid">${c}</div>`;
+    let c=items.map(([id,v])=>{const s=cnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im${v.image?'':' ph'}">${v.image?`<img src="${v.image}" alt="">`:`<div class="blur${v.desc?'':' empty'}">${blurText(v)}</div>`}</div><div class="tx"><div class="nm">${esc(v.name)}</div></div></div>`}).join('');
+    if(!items.length)c=`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im">${ic('plus',34)}</div><div class="tx"><div class="nm">Empty — click to add</div></div></div>`;
+    return `<div class="sh" data-t="${k}"><h2>${t.l}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid">${c}</div>`;
   }).join('');
   $('#secs').innerHTML=h;
 }
@@ -339,7 +368,7 @@ $('#msave').onclick=async()=>{
 
 function openDetail(id){
   cur=id;tab='desc';const v=D[id],t=TYPES[v.type];
-  $('#home').classList.add('hide');const el=$('#detail');el.classList.remove('hide');
+  $('#home').classList.add('hide');const el=$('#detail');el.classList.remove('hide');el.dataset.t=v.type;
   el.innerHTML=`
   <div class="row" style="margin-top:14px;justify-content:space-between"><button id="back">${ic('back',18)} Back</button><div class="row"><button id="edit">${ic('edit',16)} Edit</button><button class="d" id="del">${ic('trash',16)} Delete</button></div></div>
   <div class="dh"><div class="lg">${v.image?`<img src="${v.image}" alt="">`:ic(t.i,32)}</div><div style="min-width:0"><h2>${esc(v.name)}</h2><div class="st">${esc(v.title)}</div><div class="meta"><span class="bd" id="hs"></span><span id="hn"></span></div></div></div>
@@ -354,7 +383,7 @@ function openDetail(id){
 }
 function hero(){
   const v=D[cur],s=cnt(v);
-  $('#hn').textContent=`${bn(s.d)}/${bn(s.n)} tasks done`;$('#hs').textContent=v.status;
+  $('#hn').textContent=`${bn(s.d)}/${bn(s.n)} tasks done`;$('#hs').textContent=v.status;$('#hs').dataset.s=v.status;
 }
 function renderTab(){
   const v=D[cur],tc=$('#tc');let h='';
