@@ -1,5 +1,5 @@
 /* Brainmate service worker — bump VERSION whenever you deploy a new index.html */
-const VERSION = 'v1';
+const VERSION = 'v3';
 const CACHE = 'brainmate-' + VERSION;
 const SHELL = [
   './',
