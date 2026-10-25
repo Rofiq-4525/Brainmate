@@ -1,14 +1,14 @@
 /* Brainmate service worker — bump VERSION whenever you deploy a new index.html */
-const VERSION = 'v4';
+const VERSION = 'v5';
 const CACHE = 'brainmate-' + VERSION;
 const SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/maskable-512.png',
-  './icons/apple-touch-icon.png'
+  './icons/icon-192-v2.png',
+  './icons/icon-512-v2.png',
+  './icons/maskable-512-v2.png',
+  './icons/apple-touch-icon-v2.png'
 ];
 /* third-party static assets that are safe to cache (Firebase SDK + fonts) */
 const STATIC_HOSTS = ['www.gstatic.com', 'fonts.googleapis.com', 'fonts.gstatic.com'];
