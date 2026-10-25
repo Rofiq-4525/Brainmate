@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#e9e9e9" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff">
 <meta name="description" content="Track your creations, imagination and aspirations in one place.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-v2.png">
@@ -16,7 +15,7 @@
 <link rel="icon" href="icons/icon-192-v2.png">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:light dark;--bg:#e9e9e9;--card:#fff;--ink:#111;--mut:#6a6a6a;--g:#111;--onG:#111;--soft:#f1f1f1;--line:#d6d6d6;--red:#444}
+:root{color-scheme:light;--bg:#fff;--card:#fff;--ink:#111;--mut:#666;--g:#111;--onG:#111;--soft:#fff;--line:#e3e3e3;--red:#444}
 *{box-sizing:border-box;margin:0}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;padding-bottom:60px;-webkit-font-smoothing:antialiased}
 .in{max-width:960px;margin:0 auto;padding:0 20px}
@@ -147,17 +146,6 @@ body{padding-bottom:90px}
   --lift:0 12px 24px -10px #00000059;
   --glow:0 4px 12px -2px #00000066;
 }
-@media(prefers-color-scheme:dark){:root{
-  --bg:#0a0a0a;--card:#151515;--ink:#f2f2f2;--mut:#9b9b9b;--g:#f2f2f2;--onG:#f2f2f2;--soft:#1e1e1e;--line:#2d2d2d;--red:#cfcfcf;
-  --ring:#ffffff29;
-  --fx-top:0 4px 24px -6px #ffffff14;
-  --fx-bar:0 -6px 24px -8px #ffffff14;
-  --fx-project:0 0 12px -2px #ffffff29;
-  --fx-idea:0 0 34px 2px #ffffff1a;
-  --fx-dream:0 0 0 4px #ffffff0f,0 0 14px #ffffff1a;
-  --lift:0 0 26px #ffffff2e;
-  --glow:0 0 16px #ffffff59;
-}}
 .ph{color:var(--line)}
 .top{box-shadow:var(--fx-top)}
 .bar{box-shadow:var(--fx-bar)}
@@ -177,9 +165,13 @@ input:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px var(--ring);border-
 .bd[data-s]{font-weight:600}
 .bd[data-s="In progress"]{background:var(--ink);color:var(--card)}
 .bd[data-s="On hold"]{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--mut)}
-.bd[data-s="Done"]{background:var(--soft);color:var(--mut)}
+.bd[data-s="Done"]{background:#fff;color:var(--ink);box-shadow:0 1px 5px #0000003d}
 #msave{background:var(--ink);border-color:var(--ink);color:var(--card);box-shadow:var(--glow)}
 button.d:hover{box-shadow:var(--fx-dream)}
+/* all-white: separation comes from hairlines and shadow only */
+.card[data-t] .im{border-bottom:1px solid var(--line)}
+#detail .lg{border:1px solid var(--line)}
+.dd button:hover{background:#fff;box-shadow:var(--fx-project)}
 </style>
 </head>
 <body>
