@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#eef2f1">
+<meta name="theme-color" content="#e9e9e9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
 <meta name="description" content="Track your creations, imagination and aspirations in one place.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-v2.png">
@@ -15,7 +16,7 @@
 <link rel="icon" href="icons/icon-192-v2.png">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:light;--bg:#eef2f1;--card:#fbfcfb;--ink:#14272f;--mut:#5c6e74;--g:#235a75;--onG:#14272f;--soft:#e3eae8;--line:#d3dcd9;--red:#b0562a;--c-project:#2b6a87;--c-idea:#cc7339;--c-dream:#66895a;--t-project:#dde9ef;--t-idea:#f6e6d9;--t-dream:#e2ecdd}
+:root{color-scheme:light dark;--bg:#e9e9e9;--card:#fff;--ink:#111;--mut:#6a6a6a;--g:#111;--onG:#111;--soft:#f1f1f1;--line:#d6d6d6;--red:#444}
 *{box-sizing:border-box;margin:0}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;padding-bottom:60px;-webkit-font-smoothing:antialiased}
 .in{max-width:960px;margin:0 auto;padding:0 20px}
@@ -135,34 +136,50 @@ body{padding-bottom:90px}
 .blur{width:100%;height:100%;padding:12px 14px;overflow:hidden;font-size:.78rem;line-height:1.45;color:var(--ink);opacity:.6;text-align:left;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical}
 .blur.empty{display:flex;align-items:center;justify-content:center;text-align:center;opacity:.35;font-style:italic}
 
-/* ====== colour system: three logo colours = three categories ====== */
-[data-t=project]{--c:var(--c-project);--tint:var(--t-project)}
-[data-t=idea]{--c:var(--c-idea);--tint:var(--t-idea)}
-[data-t=dream]{--c:var(--c-dream);--tint:var(--t-dream)}
-.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--c-idea) 0 33.34%,var(--c-project) 33.34% 66.67%,var(--c-dream) 66.67%)}
-.card[data-t]{border-top:3px solid var(--c)}
-.card.empty[data-t]{border-top:1.5px dashed var(--c)}
-.card[data-t] .ph{background:var(--tint)}
-.card[data-t] .blur{color:var(--ink);opacity:.72}
-.sh[data-t] h2{display:flex;align-items:center;gap:10px}
-.sh[data-t] h2::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
-.sh[data-t] .plus{color:var(--c)}
-.bar .chip[data-k=all]{--c:var(--g);--tint:var(--soft)}
-.bar .chip[data-k=project]{--c:var(--c-project);--tint:var(--t-project)}
-.bar .chip[data-k=idea]{--c:var(--c-idea);--tint:var(--t-idea)}
-.bar .chip[data-k=dream]{--c:var(--c-dream);--tint:var(--t-dream)}
-.bar .chip.on{color:var(--c);background:var(--tint);border-color:transparent}
-#detail .dh{border-top:3px solid var(--c)}
-#detail .lg{background:var(--tint);color:var(--c)}
-#detail .tab.on{color:var(--c);border-bottom-color:var(--c)}
-#detail .ck input[type=checkbox]{accent-color:var(--c)}
-#detail .row .chip.on{background:var(--tint);border-color:var(--c);color:var(--c)}
+/* ====== black / white / ash: depth comes from shadow (light) and glow (dark) ====== */
+:root{
+  --ring:#1111141f;
+  --fx-top:0 4px 18px -8px #00000040;
+  --fx-bar:0 -6px 20px -10px #00000040;
+  --fx-project:0 6px 14px -8px #00000073;
+  --fx-idea:0 10px 32px -6px #0000002e;
+  --fx-dream:0 0 0 4px #0000000d,0 2px 6px #00000024;
+  --lift:0 12px 24px -10px #00000059;
+  --glow:0 4px 12px -2px #00000066;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0a0a0a;--card:#151515;--ink:#f2f2f2;--mut:#9b9b9b;--g:#f2f2f2;--onG:#f2f2f2;--soft:#1e1e1e;--line:#2d2d2d;--red:#cfcfcf;
+  --ring:#ffffff29;
+  --fx-top:0 4px 24px -6px #ffffff14;
+  --fx-bar:0 -6px 24px -8px #ffffff14;
+  --fx-project:0 0 12px -2px #ffffff29;
+  --fx-idea:0 0 34px 2px #ffffff1a;
+  --fx-dream:0 0 0 4px #ffffff0f,0 0 14px #ffffff1a;
+  --lift:0 0 26px #ffffff2e;
+  --glow:0 0 16px #ffffff59;
+}}
+.ph{color:var(--line)}
+.top{box-shadow:var(--fx-top)}
+.bar{box-shadow:var(--fx-bar)}
+.dd,.box{box-shadow:var(--fx-idea)}
+[data-t=project]{--fx:var(--fx-project)}
+[data-t=idea]{--fx:var(--fx-idea)}
+[data-t=dream]{--fx:var(--fx-dream)}
+.card[data-t]{box-shadow:var(--fx)}
+.card[data-t]:hover{box-shadow:var(--fx),var(--lift)}
+.card.empty[data-t],.card.empty[data-t]:hover{box-shadow:none}
+.card[data-t] .blur{color:var(--ink);opacity:.7}
+#detail .dh{box-shadow:var(--fx)}
+#detail .lg{background:var(--soft);color:var(--ink)}
+input:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px var(--ring);border-color:var(--mut)}
+.bar .chip.on{background:var(--ink);color:var(--card);border-color:transparent;box-shadow:var(--glow)}
+.row .chip.on{background:var(--ink);color:var(--card);border-color:var(--ink);box-shadow:var(--glow)}
 .bd[data-s]{font-weight:600}
-.bd[data-s="In progress"]{background:var(--t-project);color:var(--c-project)}
-.bd[data-s="On hold"]{background:var(--t-idea);color:#9a4f1f}
-.bd[data-s="Done"]{background:var(--t-dream);color:#42663a}
-#msave{background:var(--g);border-color:var(--g);color:#fff}
-#msave:hover{background:var(--ink);border-color:var(--ink)}
+.bd[data-s="In progress"]{background:var(--ink);color:var(--card)}
+.bd[data-s="On hold"]{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--mut)}
+.bd[data-s="Done"]{background:var(--soft);color:var(--mut)}
+#msave{background:var(--ink);border-color:var(--ink);color:var(--card);box-shadow:var(--glow)}
+button.d:hover{box-shadow:var(--fx-dream)}
 </style>
 </head>
 <body>
