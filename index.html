@@ -105,10 +105,12 @@ body{padding-bottom:90px}
 .bk{transform-box:fill-box;animation:drop 2.6s ease-out infinite}
 @keyframes drop{0%{transform:translateY(-9px);opacity:0}18%{transform:translateY(0);opacity:1}25%{transform:translateY(-2px)}32%{transform:translateY(0)}78%{transform:translateY(0);opacity:1}100%{transform:translateY(0);opacity:0}}
 @media(prefers-reduced-motion:reduce){.bk{animation:none}}
-.tb.tb2{right:52px}
-.tb.tb3{right:90px}
+.dd{position:absolute;left:14px;top:calc(100% + 6px);z-index:20;min-width:230px;display:none;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 8px 24px #0002}
+.dd.on{display:flex}
+.dd button{border:none;background:none;width:100%;justify-content:flex-start;padding:10px 12px;border-radius:8px;font-size:.92rem}
+.dd button:hover{background:var(--soft)}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--card);padding:8px 16px;border-radius:10px;font-size:.9rem;z-index:50;max-width:90%;text-align:center}
-.tb2.busy{opacity:.4;pointer-events:none}
+.dd button.busy{opacity:.4;pointer-events:none}
 .bar .chip.on{border-color:var(--line);background:var(--soft);box-shadow:none}
 .tb{position:absolute;right:14px;top:50%;transform:translateY(-50%);flex-direction:row;gap:6px;padding:4px;border:none;background:none;font-size:.85rem;color:var(--ink)}
 .lw{position:relative;width:50px;height:54px}
@@ -128,7 +130,7 @@ body{padding-bottom:90px}
 </style>
 </head>
 <body>
-<div class="top"><div class="in"><img class="hl" id="hlogo" data-p="l" alt="Brainmate"><div class="brand" id="brand"><b>Brainmate</b></div><button id="ex" class="tb tb3" aria-label="Export data" title="Export data"></button><button id="bk" class="tb tb2" aria-label="Backup to Google Drive" title="Backup to Google Drive"></button><button id="sign" class="tb"></button></div></div>
+<div class="top"><div class="in"><img class="hl" id="hlogo" data-p="l" alt="Brainmate"><div class="brand" id="brand"><b>Brainmate</b></div><button id="sign" class="tb"></button><div class="dd" id="dd"><button id="ex"></button><button id="bk"></button></div></div></div>
 
 <div class="in">
   <div id="home"><div id="secs"></div></div>
@@ -204,7 +206,7 @@ const cnt=v=>{const L=v.checklist,d=L.filter(x=>x.d).length;return{d,n:L.length,
 
 function nav(){
   const b=$('#sign');
-  $('#bk').innerHTML=ic('cloud',20);$('#ex').innerHTML=ic('download',20);
+  $('#bk').innerHTML=ic('cloud',18)+'<span>Backup to Google Drive</span>';$('#ex').innerHTML=ic('download',18)+'<span>Export data</span>';
     b.innerHTML=user?(user.photoURL?`<img src="${esc(user.photoURL)}" style="width:22px;height:22px;border-radius:50%" alt="">`:ic('user')):ic('user');
   b.title=b.ariaLabel=user?'Log out':'Log in';
 }
@@ -253,7 +255,9 @@ $('#ex').onclick=()=>{
 };
 $('#sign').onclick=()=>{if(!auth)return;user?confirm('Log out?')&&A.signOut(auth):login()};
 function goHome(){cur=null;$('#detail').classList.add('hide');$('#home').classList.remove('hide');closeModal();home();scrollTo(0,0)}
-$('#brand').onclick=goHome;$('#hlogo').onclick=goHome;
+$('#brand').onclick=goHome;$('#hlogo').onclick=e=>{e.stopPropagation();$('#dd').classList.toggle('on')};
+document.addEventListener('click',e=>{if(!e.target.closest('#dd'))$('#dd').classList.remove('on')});
+addEventListener('keydown',e=>e.key==='Escape'&&$('#dd').classList.remove('on'));
 
 const DEMO={
 project:[
