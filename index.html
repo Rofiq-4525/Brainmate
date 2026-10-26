@@ -136,6 +136,8 @@ body{padding-bottom:90px}
 .drow{width:100%;justify-content:flex-start;text-align:left;padding:12px 14px;gap:12px;align-items:center}
 .drow span{display:flex;flex-direction:column;line-height:1.35}
 .drow small{color:var(--mut);font-size:.82rem}
+#rm{z-index:48}
+#rl{display:grid;gap:8px;max-height:55vh;overflow:auto}
 .sep{height:1px;background:var(--line);margin:4px 6px}
 .am p{white-space:pre-line;color:var(--mut);font-size:.95rem}
 .dd button{border:none;background:none;width:100%;justify-content:flex-start;padding:10px 12px;border-radius:8px;font-size:.92rem}
@@ -220,6 +222,12 @@ button.d:hover{box-shadow:var(--press)}
   <div class="dprof" id="dprof"></div>
   <div class="stats" id="dstats"></div>
   <div class="panel">
+    <h3>Auto backup</h3>
+    <div class="mut" id="bkst">…</div>
+    <button class="drow" data-bk="restore"></button>
+    <button class="drow" data-bk="toggle"></button>
+  </div>
+  <div class="panel">
     <h3>Data &amp; backup</h3>
     <button class="drow" data-do="ex"></button>
     <button class="drow" data-do="im"></button>
@@ -244,6 +252,13 @@ button.d:hover{box-shadow:var(--press)}
     <div class="or">or</div>
     <button class="lbtn" id="lgoogle">Continue with Google</button>
   </div>
+</div></div>
+
+<div class="modal" id="rm"><div class="box">
+  <h3>Restore from backup</h3>
+  <div class="mut">Pick a backup. Your current items will be replaced (a safety copy is saved first).</div>
+  <div id="rl"></div>
+  <button id="rcancel">Cancel</button>
 </div></div>
 
 <div class="modal" id="am"><div class="box am">
@@ -309,6 +324,7 @@ const P={
  moon:'<path d="M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z"/>',
  bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10c1 1 1 2 1 3h6c0-1 0-2 1-3a6 6 0 0 0-4-10z"/>',
  upload:'<path d="M12 3v12"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/>',
+ history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8h.01"/>',
  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 6L2 7"/>',
@@ -323,10 +339,99 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const deb=(f,ms=600)=>{let t=null,a=[];const g=(...x)=>{a=x;clearTimeout(t);t=setTimeout(()=>{t=null;f(...a)},ms)};g.flush=()=>{if(t){clearTimeout(t);t=null;f(...a)}};return g};
 const col=()=>F.collection(db,'users',user.uid,'items'),dref=id=>F.doc(db,'users',user.uid,'items',id);
 const fail=(m,e)=>{console.warn(e);toast(m+(e&&(e.code||e.message)?': '+(e.code||e.message):''))};
+/* ====== Auto backup (Firebase) ====== */
+let bkT=null,bkBusy=false,bkDirty=false,bkDay=0,bkErr=false;
+const bkOn=()=>{try{return !localStorage.getItem('bm_autobk_off')}catch(e){return true}};
+const bkCol=()=>F.collection(db,'users',user.uid,'backups');
+const bkRef=id=>F.doc(db,'users',user.uid,'backups',id);
+const bkParts=id=>F.collection(db,'users',user.uid,'backups',id,'parts');
+const dayId=()=>{const d=new Date();return 'day-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const ago=ms=>{const s=Math.round((Date.now()-ms)/1000);return s<60?'just now':s<3600?Math.round(s/60)+' min ago':s<86400?Math.round(s/3600)+' hr ago':Math.round(s/86400)+' days ago'};
+function bkSoon(){if(!cloud()||!bkOn())return;bkDirty=true;clearTimeout(bkT);bkT=setTimeout(bkRun,5000)}
+async function bkWrite(id,items){
+  const json=JSON.stringify({app:'Brainmate',savedAt:new Date().toISOString(),items});
+  const parts=[];for(let i=0;i<json.length;i+=250000)parts.push(json.slice(i,i+250000));
+  let old=0;try{const sn=await F.getDoc(bkRef(id));if(sn.exists())old=sn.data().parts||0}catch(e){}
+  for(let i=0;i<parts.length;i++)await F.setDoc(F.doc(bkParts(id),String(i)),{i,d:parts[i]});
+  for(let i=parts.length;i<old;i++)await F.deleteDoc(F.doc(bkParts(id),String(i)));
+  await F.setDoc(bkRef(id),{at:Date.now(),count:Object.keys(items).length,parts:parts.length});
+}
+async function bkDel(id){
+  const sn=await F.getDocs(bkParts(id));
+  for(const d of sn.docs)await F.deleteDoc(d.ref);
+  await F.deleteDoc(bkRef(id));
+}
+async function bkPrune(){
+  try{
+    const sn=await F.getDocs(bkCol());
+    const days=sn.docs.map(d=>d.id).filter(i=>i.startsWith('day-')).sort().reverse().slice(7);
+    for(const id of days)await bkDel(id);
+  }catch(e){console.warn(e)}
+}
+async function bkRun(){
+  if(!cloud()||!bkOn()||!Object.keys(D).length)return;
+  if(bkBusy)return;
+  bkBusy=true;bkDirty=false;
+  try{
+    const snap=JSON.parse(JSON.stringify(D));
+    await bkWrite('latest',snap);
+    if(Date.now()-bkDay>30*60*1000){const first=!bkDay;await bkWrite(dayId(),snap);bkDay=Date.now();if(first)bkPrune()}
+    bkErr=false;
+    if($('#dp').classList.contains('on'))bkStatus();
+  }catch(e){if(!bkErr){bkErr=true;fail('Auto backup failed',e)}}
+  bkBusy=false;
+  if(bkDirty)bkSoon();
+}
+async function bkStatus(){
+  const el=$('#bkst');if(!el||!cloud())return;
+  const on=bkOn();
+  el.textContent=on?'Auto backup is on':'Auto backup is off';
+  document.querySelector('[data-bk=toggle]').innerHTML=ic('cloud',18)+'<span><b>'+(on?'Turn off auto backup':'Turn on auto backup')+'</b><small>'+(on?'Stop saving backups automatically':'Save a backup after every change')+'</small></span>';
+  try{
+    const sn=await F.getDoc(bkRef('latest'));
+    el.textContent+=sn.exists()?' · Last backup: '+ago(sn.data().at):' · No backup yet';
+  }catch(e){}
+}
+async function bkRead(id){
+  const sn=await F.getDocs(bkParts(id));
+  const txt=sn.docs.map(d=>d.data()).sort((a,b)=>a.i-b.i).map(x=>x.d).join('');
+  return JSON.parse(txt);
+}
+const closeRm=()=>$('#rm').classList.remove('on');
+const bkName=id=>id==='latest'?'Latest backup':id==='before-restore'?'Before last restore':id.startsWith('day-')?'Daily — '+id.slice(4):id;
+async function openRm(){
+  if(!cloud())return;
+  $('#rm').classList.add('on');$('#rl').innerHTML='<div class="mut">Loading…</div>';
+  try{
+    const sn=await F.getDocs(bkCol());
+    const L=sn.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.at||0)-(a.at||0));
+    $('#rl').innerHTML=L.length?L.map(b=>`<button class="drow" data-r="${esc(b.id)}"><span><b>${esc(bkName(b.id))}</b><small>${new Date(b.at).toLocaleString('en-US')} · ${b.count||0} items</small></span></button>`).join(''):'<div class="mut">No backups yet. They are created automatically after your changes.</div>';
+  }catch(e){closeRm();fail('Could not load backups',e)}
+}
+async function bkRestore(id){
+  try{
+    const o=await bkRead(id);
+    const list=Object.values((o&&o.items)||{}).filter(v=>v&&TYPES[v.type]&&v.name!==undefined);
+    if(!list.length)return toast('This backup is empty');
+    if(!confirm('Restore '+list.length+' items? Your current items will be replaced. A safety copy of your current data is saved first.'))return;
+    $('#rl').innerHTML='<div class="mut">Restoring…</div>';
+    if(Object.keys(D).length)await bkWrite('before-restore',JSON.parse(JSON.stringify(D)));
+    const ops=[];
+    Object.keys(D).forEach(k=>ops.push(b=>b.delete(dref(k))));
+    list.forEach(v=>{const {created,...r}=v;ops.push(b=>b.set(F.doc(col()),{...DF(),...r,created:F.serverTimestamp()}))});
+    for(let i=0;i<ops.length;i+=400){const b=F.writeBatch(db);ops.slice(i,i+400).forEach(f=>f(b));await b.commit()}
+    closeRm();goHome();toast('Backup restored');bkSoon();
+  }catch(e){closeRm();fail('Restore failed',e)}
+}
+$('#rcancel').onclick=closeRm;
+$('#rm').onclick=e=>{if(e.target.id==='rm')closeRm()};
+$('#rl').onclick=e=>{const b=e.target.closest('[data-r]');if(b)bkRestore(b.dataset.r)};
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&bkT){clearTimeout(bkT);bkRun()}});
+
 const bn=n=>String(n);
 const LK='bm_local_v1',cloud=()=>!!(db&&user);
 const saveLocal=()=>{try{localStorage.setItem(LK,JSON.stringify(D))}catch(e){toast('Device storage is full')}};
-const save=(id,p)=>{Object.assign(D[id],p);if(cloud())F.updateDoc(dref(id),p).catch(e=>fail('Save failed',e));else saveLocal()};
+const save=(id,p)=>{Object.assign(D[id],p);if(cloud()){F.updateDoc(dref(id),p).catch(e=>fail('Save failed',e));bkSoon()}else saveLocal()};
 const blurText=v=>v.desc?esc(v.desc):'Add description';
 const cnt=v=>{const L=v.checklist,d=L.filter(x=>x.d).length;return{d,n:L.length,p:L.length?Math.round(d/L.length*100):0}};
 
@@ -337,6 +442,7 @@ function nav(){
   $('#bk').innerHTML=ic('cloud',18)+'<span>Backup to Google Drive</span>';$('#ex').innerHTML=ic('download',18)+'<span>Export data</span>';$('#im').innerHTML=ic('upload',18)+'<span>Import data</span>';
   ['#ex','#im'].forEach(k=>$(k).classList.toggle('hide',!!user));$('#bk').classList.add('hide');
   $('#dback').innerHTML=ic('back',18)+' Back';$('#dout').innerHTML=ic('login',16)+' Log out';
+  document.querySelector('[data-bk=restore]').innerHTML=ic('history',18)+'<span><b>Restore from backup</b><small>Go back to an earlier saved copy</small></span>';
   document.querySelector('[data-do=ex]').innerHTML=ic('download',18)+'<span><b>Export data</b><small>Download all your items as a JSON file</small></span>';
   document.querySelector('[data-do=im]').innerHTML=ic('upload',18)+'<span><b>Import data</b><small>Add items from a Brainmate JSON file</small></span>';
   document.querySelector('[data-do=bk]').innerHTML=ic('cloud',18)+'<span><b>Backup to Google Drive</b><small>Save a copy of your data in your Drive</small></span>';
@@ -402,7 +508,7 @@ $('#imf').onchange=async e=>{
       if(cloud()){const r=await F.addDoc(col(),{...data,created:F.serverTimestamp()});D[r.id]=data}
       else D['l'+t+'_'+i]=data;
     }
-    if(!cloud())saveLocal();
+    if(!cloud())saveLocal();else bkSoon();
     goHome();toast(list.length+' items imported');
   }catch(x){fail('Import failed',x)}
 };
@@ -420,7 +526,7 @@ const closeLogin=()=>$('#lp').classList.remove('on');
 const lerr=(m,ok)=>{$('#lerr').textContent=m;$('#lerr').classList.toggle('ok',!!ok)};
 const AERR={
   'auth/invalid-credential':'Wrong email or password','auth/wrong-password':'Wrong email or password','auth/user-not-found':'No account found with this email',
-  'auth/email-already-in-use':'This email is already registered. Try logging in','auth/weak-password':'Password must be at least 6 characters',
+  'auth/email-already-in-use':'This email is already registered, maybe with Google. Log in with Google, or tap “Forgot password?” to set a password for this email.','auth/weak-password':'Password must be at least 6 characters',
   'auth/invalid-email':'Please enter a valid email','auth/too-many-requests':'Too many attempts. Try again later',
   'auth/operation-not-allowed':'Email login is not enabled in Firebase yet','auth/network-request-failed':'No internet connection'
 };
@@ -436,7 +542,7 @@ async function lsubmit(){
     if(lm==='in')await A.signInWithEmailAndPassword(auth,email,pw);
     else{const r=await A.createUserWithEmailAndPassword(auth,email,pw);await A.updateProfile(r.user,{displayName:name}).catch(()=>{})}
     closeLogin();toast(lm==='in'?'Logged in':'Account created');
-  }catch(e){lerr(AERR[e.code]||'Something went wrong. Try again')}
+  }catch(e){if(e.code==='auth/email-already-in-use'){setLm('in');lerr(AERR[e.code])}else lerr(AERR[e.code]||'Something went wrong. Try again')}
   b.classList.remove('busy');
 }
 $('#ltabs').onclick=e=>{const b=e.target.closest('[data-m]');if(b)setLm(b.dataset.m)};
@@ -455,12 +561,18 @@ function renderDash(){
   const L=Object.values(D),by=k=>L.filter(v=>v.type===k).length;
   let d=0,n=0;L.forEach(v=>{const s=cnt(v);d+=s.d;n+=s.n});
   $('#dprof').innerHTML=`<div class="lg">${user.photoURL?`<img src="${esc(user.photoURL)}" alt="">`:ic('user',30)}</div><div style="min-width:0"><b>${esc(user.displayName||'Brainmate user')}</b><small>${esc(user.email||'')}</small></div>`;
+  bkStatus();
   $('#dstats').innerHTML=`<div><small>Creations</small><b>${by('project')}</b></div><div><small>Imagination</small><b>${by('idea')}</b></div><div><small>Aspiration</small><b>${by('dream')}</b></div>`;
 }
 const openDash=()=>{renderDash();$('#dp').classList.add('on');scrollTo(0,0)};
 const closeDash=()=>$('#dp').classList.remove('on');
 $('#dback').onclick=closeDash;
-$('#dp').onclick=e=>{const b=e.target.closest('[data-do]');if(b)$('#'+b.dataset.do).click()};
+$('#dp').onclick=e=>{
+  const b=e.target.closest('[data-do]');if(b)return $('#'+b.dataset.do).click();
+  const k=e.target.closest('[data-bk]');if(!k)return;
+  if(k.dataset.bk==='toggle'){try{bkOn()?localStorage.setItem('bm_autobk_off','1'):localStorage.removeItem('bm_autobk_off')}catch(x){}if(bkOn())bkSoon();bkStatus()}
+  else openRm();
+};
 $('#dout').onclick=()=>{if(confirm('Log out?')){closeDash();A.signOut(auth)}};
 $('#sign').onclick=()=>{if(!auth)return toast('Login needs Firebase');user?openDash():openLogin()};
 function goHome(){sd1.flush();sd2.flush();if($('#dp').classList.contains('on'))renderDash();cur=null;$('#detail').classList.add('hide');$('#home').classList.remove('hide');closeModal();home();scrollTo(0,0)}
@@ -478,7 +590,7 @@ $('#ct').onclick=()=>{$('#dd').classList.remove('on');location.href='mailto:'+SI
 $('#oa').onclick=()=>{$('#dd').classList.remove('on');window.open(SITE.otherApp,'_blank','noopener')};
 $('#brand').onclick=goHome;$('#hlogo').onclick=e=>{e.stopPropagation();$('#dd').classList.toggle('on')};
 document.addEventListener('click',e=>{if(!e.target.closest('#dd'))$('#dd').classList.remove('on')});
-addEventListener('keydown',e=>{if(e.key==='Escape'){$('#dd').classList.remove('on');$('#am').classList.remove('on');closeLogin();closeDash()}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeRm();$('#dd').classList.remove('on');$('#am').classList.remove('on');closeLogin();closeDash()}});
 
 const DEMO_DESC="It's a demo. Brainmate — create your own or edit this demo as you need.";
 const demoItems=()=>{let n=Date.now();return Object.keys(TYPES).flatMap(type=>[1,2,3,4].map(i=>({...DF(),type,name:'Demo '+i,title:'',desc:DEMO_DESC,image:'',ts:n++})))};
@@ -504,7 +616,7 @@ $('#secs').addEventListener('click',e=>{
 });
 function delItem(id){
   if(!confirm('Delete this permanently?'))return;
-  if(cloud())F.deleteDoc(dref(id)).catch(e=>fail('Delete failed',e));
+  if(cloud()){F.deleteDoc(dref(id)).catch(e=>fail('Delete failed',e));bkSoon()}
   delete D[id];if(!cloud())saveLocal();goHome();
 }
 
@@ -521,7 +633,7 @@ $('#msave').onclick=async()=>{
   if(mode.id){save(mode.id,{name,desc});closeModal();openDetail(mode.id)}
   else{
     const data={...DF(),type:mode.type,name,desc,ts:Date.now()};
-    if(cloud()){try{const r=await F.addDoc(col(),{...data,created:F.serverTimestamp()});D[r.id]=data}catch(e){return fail('Could not create',e)}}
+    if(cloud()){try{const r=await F.addDoc(col(),{...data,created:F.serverTimestamp()});D[r.id]=data;bkSoon()}catch(e){return fail('Could not create',e)}}
     else{D['l'+Date.now()]=data;saveLocal()}
     closeModal();home();
   }
@@ -601,7 +713,7 @@ addEventListener('pagehide',()=>{sd1.flush();sd2.flush()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){sd1.flush();sd2.flush()}});
 nav();
 if(auth)A.onAuthStateChanged(auth,u=>{
-  user=u;nav();if(!u)closeDash();
+  user=u;nav();if(!u)closeDash();clearTimeout(bkT);bkDay=0;bkErr=false;
   if(unsub){unsub();unsub=null}
   Object.keys(D).forEach(k=>delete D[k]);
   if(u)listen();else loadGuest();
