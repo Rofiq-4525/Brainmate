@@ -462,7 +462,7 @@ function nav(){
   document.querySelector('[data-do=ex]').innerHTML=ic('download',18)+'<span><b>Export data</b><small>Download all your items as a JSON file</small></span>';
   document.querySelector('[data-do=im]').innerHTML=ic('upload',18)+'<span><b>Import data</b><small>Add items from a Brainmate JSON file</small></span>';
   document.querySelector('[data-do=bk]').innerHTML=ic('cloud',18)+'<span><b>Backup to Google Drive</b><small>Save a copy of your data in your Drive</small></span>';
-    b.innerHTML=user?(user.photoURL?`<img src="${esc(user.photoURL)}" style="width:22px;height:22px;border-radius:50%" alt="">`:ic('user')):ic('user');
+    b.innerHTML=user?(user.photoURL?`<img src="${esc(user.photoURL)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;display:block" alt="" referrerpolicy="no-referrer">`:`<span style="width:34px;height:34px;border-radius:50%;background:var(--soft);box-shadow:0 0 0 1px var(--line);display:flex;align-items:center;justify-content:center">${ic('user',22)}</span>`):ic('user');
   b.title=b.ariaLabel=user?'Log out':'Log in';
 }
 const SCOPE='https://www.googleapis.com/auth/drive.file';
