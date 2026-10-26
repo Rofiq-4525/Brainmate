@@ -1,1 +1,8 @@
-
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.brainmate_apk.twa",
+        "sha256_cert_fingerprints": ["B0:25:0B:B8:5A:DD:D2:41:1F:C5:65:73:C4:07:32:7C:75:9E:A5:87:BD:14:27:50:06:7E:6B:FA:96:6D:23:98"]
+      }
+    }]
