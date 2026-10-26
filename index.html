@@ -94,7 +94,7 @@ iframe{width:100%;height:420px;border:1px solid var(--line);border-radius:12px;m
 @media(max-width:560px){.in{padding:0 14px}.brand b{font-size:1.1rem}.nav button span{display:none}.nav button{padding:8px 10px}.stats b{font-size:1.5rem}.stats div{padding:12px 14px}.grid{grid-template-columns:1fr 1fr;gap:12px}.tx{padding:10px 12px 12px}.nm{font-size:.88rem}.dh{gap:12px;padding:14px}.lg{width:60px;height:60px}}
 .top .in{justify-content:center;height:56px}
 .brand b{font-size:1.3rem}
-.hl{position:absolute;left:14px;top:50%;transform:translateY(-50%);height:30px;width:auto;cursor:pointer}
+.hl{position:absolute;left:14px;top:50%;transform:translateY(-50%);height:auto;width:auto;cursor:pointer;padding:6px;border:none;background:none;color:var(--ink)}
 body{padding-bottom:90px}
 .modal{z-index:40}
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:15;padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;background:var(--bg)}
@@ -114,6 +114,30 @@ body{padding-bottom:90px}
 @media(prefers-reduced-motion:reduce){.bk{animation:none}}
 .dd{position:absolute;left:14px;top:calc(100% + 6px);z-index:20;min-width:230px;display:none;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 8px 24px #0002}
 .dd.on{display:flex}
+.lpg{position:fixed;inset:0;z-index:45;background:var(--bg);overflow:auto;display:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.lpg.on{display:block}
+.lbox{max-width:400px;margin:0 auto;padding:16px 20px 40px;display:grid;gap:14px}
+.lbox .panel{display:grid;gap:12px;margin-top:0;box-shadow:var(--raise)}
+.lbox .tabs{margin-top:4px}
+.lt{font-family:'Fraunces',Georgia,serif;font-size:1.9rem;font-weight:700;text-align:center;margin-top:10px}
+.ls{text-align:center;color:var(--mut);font-size:.92rem;margin-top:-8px}
+.lerr{min-height:1.2em;font-size:.88rem;color:var(--red)}
+.lerr.ok{color:var(--mut)}
+.lk{font-size:.86rem;color:var(--mut);background:none;border:none;padding:0;justify-self:end;text-decoration:underline}
+.lbtn{justify-content:center;width:100%}
+#lgo{background:#fff;color:var(--ink);border-color:transparent;font-weight:600;box-shadow:var(--raise)}
+.or{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:.85rem}
+.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+.dprof{display:flex;gap:14px;align-items:center;padding:6px 2px}
+.dprof .lg{width:64px;height:64px;border-radius:50%}
+.dprof b{display:block;font-size:1.15rem;line-height:1.3}
+.dprof small{color:var(--mut);font-size:.9rem;word-break:break-all}
+#dp .stats{margin-top:0}
+.drow{width:100%;justify-content:flex-start;text-align:left;padding:12px 14px;gap:12px;align-items:center}
+.drow span{display:flex;flex-direction:column;line-height:1.35}
+.drow small{color:var(--mut);font-size:.82rem}
+.sep{height:1px;background:var(--line);margin:4px 6px}
+.am p{white-space:pre-line;color:var(--mut);font-size:.95rem}
 .dd button{border:none;background:none;width:100%;justify-content:flex-start;padding:10px 12px;border-radius:8px;font-size:.92rem}
 .dd button:hover{background:var(--soft)}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--card);padding:8px 16px;border-radius:10px;font-size:.9rem;z-index:50;max-width:90%;text-align:center}
@@ -176,7 +200,7 @@ button.d:hover{box-shadow:var(--press)}
 </style>
 </head>
 <body>
-<div class="top"><div class="in"><img class="hl" id="hlogo" data-p="l" alt="Brainmate"><div class="brand" id="brand"><b>Brainmate</b></div><button id="sign" class="tb"></button><div class="dd" id="dd"><button id="ex"></button><button id="bk"></button><button id="inst" class="hide">Install app</button></div></div></div>
+<div class="top"><div class="in"><button class="hl" id="hlogo" aria-label="Menu" title="Menu"></button><div class="brand" id="brand"><b>Brainmate</b></div><button id="sign" class="tb"></button><div class="dd" id="dd"><button id="ex"></button><button id="im"></button><input type="file" id="imf" accept=".json,application/json" class="hide"><button id="bk"></button><button id="inst" class="hide">Install app</button><div class="sep"></div><button id="ab"></button><button id="ct"></button><button id="oa"></button></div></div></div>
 
 <div class="in">
   <div id="home"><div id="secs"></div></div>
@@ -189,6 +213,43 @@ button.d:hover{box-shadow:var(--press)}
       <input id="mn" placeholder="Name">
   <textarea id="ms" placeholder="Description" style="min-height:90px"></textarea>
   <div class="row"><button class="p" id="msave" style="flex:1;justify-content:center">Save</button><button id="mcancel">Cancel</button></div>
+</div></div>
+
+<div class="lpg" id="dp"><div class="lbox">
+  <div><button id="dback"></button></div>
+  <div class="dprof" id="dprof"></div>
+  <div class="stats" id="dstats"></div>
+  <div class="panel">
+    <h3>Data &amp; backup</h3>
+    <button class="drow" data-do="ex"></button>
+    <button class="drow" data-do="im"></button>
+    <button class="drow" data-do="bk"></button>
+  </div>
+  <button class="d lbtn" id="dout"></button>
+</div></div>
+
+<div class="lpg" id="lp"><div class="lbox">
+  <div><button id="lback"></button></div>
+  <div class="lt">Brainmate</div>
+  <div class="ls">Your creations, imagination and aspirations in one place.</div>
+  <div class="tabs" id="ltabs"><button class="tab on" data-m="in">Login</button><button class="tab" data-m="up">Sign up</button></div>
+  <div class="panel">
+    <input id="lname" data-up placeholder="Your name" autocomplete="name">
+    <input id="lemail" type="email" placeholder="Email" autocomplete="email">
+    <input id="lpass" type="password" placeholder="Password" autocomplete="current-password">
+    <input id="lpass2" data-up type="password" placeholder="Confirm password" autocomplete="new-password">
+    <button class="lk" id="lforgot" data-in>Forgot password?</button>
+    <div class="lerr" id="lerr"></div>
+    <button class="p lbtn" id="lgo">Login</button>
+    <div class="or">or</div>
+    <button class="lbtn" id="lgoogle">Continue with Google</button>
+  </div>
+</div></div>
+
+<div class="modal" id="am"><div class="box am">
+  <h3>About us</h3>
+  <p id="abt"></p>
+  <button class="p" id="aclose" style="justify-content:center">Close</button>
 </div></div>
 
 <script type="module">
@@ -242,7 +303,12 @@ const P={
  x:'<path d="M6 6l12 12M18 6L6 18"/>',
  folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
  moon:'<path d="M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z"/>',
- bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10c1 1 1 2 1 3h6c0-1 0-2 1-3a6 6 0 0 0-4-10z"/>'
+ bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10c1 1 1 2 1 3h6c0-1 0-2 1-3a6 6 0 0 0-4-10z"/>',
+ upload:'<path d="M12 3v12"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/>',
+ menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+ info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8h.01"/>',
+ mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 6L2 7"/>',
+ apps:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/>'
 };
 const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${P[n]}</svg>`;
 const DF=()=>({checklist:[],features:[],notes:[],desc:'',driveId:'',status:'In progress'});
@@ -250,17 +316,26 @@ const D={};let cur=null,tab='desc',filter='all',mode=null,user=null,unsub=null;
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const deb=(f,ms=600)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>f(...a),ms)}};
+const deb=(f,ms=600)=>{let t=null,a=[];const g=(...x)=>{a=x;clearTimeout(t);t=setTimeout(()=>{t=null;f(...a)},ms)};g.flush=()=>{if(t){clearTimeout(t);t=null;f(...a)}};return g};
+const col=()=>F.collection(db,'users',user.uid,'items'),dref=id=>F.doc(db,'users',user.uid,'items',id);
+const fail=(m,e)=>{console.warn(e);toast(m+(e&&(e.code||e.message)?': '+(e.code||e.message):''))};
 const bn=n=>String(n);
 const LK='bm_local_v1',cloud=()=>!!(db&&user);
 const saveLocal=()=>{try{localStorage.setItem(LK,JSON.stringify(D))}catch(e){toast('Device storage is full')}};
-const save=(id,p)=>{Object.assign(D[id],p);if(cloud())F.updateDoc(F.doc(db,'items',id),p);else saveLocal()};
+const save=(id,p)=>{Object.assign(D[id],p);if(cloud())F.updateDoc(dref(id),p).catch(e=>fail('Save failed',e));else saveLocal()};
 const blurText=v=>v.desc?esc(v.desc):'Add description';
 const cnt=v=>{const L=v.checklist,d=L.filter(x=>x.d).length;return{d,n:L.length,p:L.length?Math.round(d/L.length*100):0}};
 
 function nav(){
   const b=$('#sign');
-  $('#bk').innerHTML=ic('cloud',18)+'<span>Backup to Google Drive</span>';$('#ex').innerHTML=ic('download',18)+'<span>Export data</span>';
+  $('#hlogo').innerHTML=ic('menu',24);$('#lback').innerHTML=ic('back',18)+' Back';
+  $('#ab').innerHTML=ic('info',18)+'<span>About us</span>';$('#ct').innerHTML=ic('mail',18)+'<span>Contact us</span>';$('#oa').innerHTML=ic('apps',18)+'<span>Our other app</span>';
+  $('#bk').innerHTML=ic('cloud',18)+'<span>Backup to Google Drive</span>';$('#ex').innerHTML=ic('download',18)+'<span>Export data</span>';$('#im').innerHTML=ic('upload',18)+'<span>Import data</span>';
+  ['#ex','#im'].forEach(k=>$(k).classList.toggle('hide',!!user));$('#bk').classList.add('hide');
+  $('#dback').innerHTML=ic('back',18)+' Back';$('#dout').innerHTML=ic('login',16)+' Log out';
+  document.querySelector('[data-do=ex]').innerHTML=ic('download',18)+'<span><b>Export data</b><small>Download all your items as a JSON file</small></span>';
+  document.querySelector('[data-do=im]').innerHTML=ic('upload',18)+'<span><b>Import data</b><small>Add items from a Brainmate JSON file</small></span>';
+  document.querySelector('[data-do=bk]').innerHTML=ic('cloud',18)+'<span><b>Backup to Google Drive</b><small>Save a copy of your data in your Drive</small></span>';
     b.innerHTML=user?(user.photoURL?`<img src="${esc(user.photoURL)}" style="width:22px;height:22px;border-radius:50%" alt="">`:ic('user')):ic('user');
   b.title=b.ariaLabel=user?'Log out':'Log in';
 }
@@ -272,7 +347,7 @@ const login=()=>A.signInWithPopup(auth,mkProv()).then(r=>{gtoken=tokOf(r)}).catc
 const toast=m=>{const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3200)};
 async function gfetch(url,o={}){
   for(let i=0;i<2;i++){
-    if(!gtoken)gtoken=tokOf(await A.reauthenticateWithPopup(user,mkProv()));
+    if(!gtoken){const g=user.providerData.some(p=>p.providerId==='google.com');gtoken=tokOf(await(g?A.reauthenticateWithPopup:A.linkWithPopup)(user,mkProv()))}
     const r=await fetch(url,{...o,headers:{...(o.headers||{}),Authorization:'Bearer '+gtoken}});
     if(r.status===401){gtoken=null;continue}
     if(!r.ok)throw new Error('Drive '+r.status);
@@ -282,7 +357,7 @@ async function gfetch(url,o={}){
 }
 async function backup(){
   if(!auth)return toast('Backup needs Firebase');
-  if(!user){toast('Log in with Google to use Drive backup');return login()}
+  if(!user){toast('Log in to use Drive backup');return openLogin()}
   const b=$('#bk');b.classList.add('busy');
   try{
     const name='brainmate-backup.json';
@@ -307,11 +382,99 @@ $('#ex').onclick=()=>{
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   toast('Data exported');
 };
-$('#sign').onclick=()=>{if(!auth)return;user?confirm('Log out?')&&A.signOut(auth):login()};
-function goHome(){cur=null;$('#detail').classList.add('hide');$('#home').classList.remove('hide');closeModal();home();scrollTo(0,0)}
+$('#im').onclick=()=>{$('#dd').classList.remove('on');$('#imf').value='';$('#imf').click()};
+$('#imf').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  let o;try{o=JSON.parse(await f.text())}catch(x){return toast('Invalid file')}
+  const src=o&&o.app==='Brainmate'&&o.items&&typeof o.items==='object'?Object.values(o.items):null;
+  if(!src)return toast('Invalid file: not a Brainmate export');
+  const list=src.filter(v=>v&&TYPES[v.type]&&v.name!==undefined).map(v=>{const {created,...r}=v;return{...DF(),...r}});
+  if(!list.length)return toast('No items found in file');
+  if(!confirm('Import '+list.length+' items? They will be added to your existing data.'))return;
+  try{
+    let t=Date.now();
+    for(const [i,v] of list.entries()){
+      const data={...v,ts:v.ts||t+i};
+      if(cloud()){const r=await F.addDoc(col(),{...data,created:F.serverTimestamp()});D[r.id]=data}
+      else D['l'+t+'_'+i]=data;
+    }
+    if(!cloud())saveLocal();
+    goHome();toast(list.length+' items imported');
+  }catch(x){fail('Import failed',x)}
+};
+let lm='in';
+function setLm(m){
+  lm=m;$('#lerr').textContent='';$('#lerr').classList.remove('ok');
+  document.querySelectorAll('#ltabs .tab').forEach(t=>t.classList.toggle('on',t.dataset.m===m));
+  document.querySelectorAll('#lp [data-up]').forEach(x=>x.classList.toggle('hide',m!=='up'));
+  document.querySelectorAll('#lp [data-in]').forEach(x=>x.classList.toggle('hide',m!=='in'));
+  $('#lgo').textContent=m==='in'?'Login':'Create account';
+  $('#lpass').autocomplete=m==='in'?'current-password':'new-password';
+}
+const openLogin=()=>{setLm('in');$('#lp').classList.add('on');$('#lemail').focus()};
+const closeLogin=()=>$('#lp').classList.remove('on');
+const lerr=(m,ok)=>{$('#lerr').textContent=m;$('#lerr').classList.toggle('ok',!!ok)};
+const AERR={
+  'auth/invalid-credential':'Wrong email or password','auth/wrong-password':'Wrong email or password','auth/user-not-found':'No account found with this email',
+  'auth/email-already-in-use':'This email is already registered. Try logging in','auth/weak-password':'Password must be at least 6 characters',
+  'auth/invalid-email':'Please enter a valid email','auth/too-many-requests':'Too many attempts. Try again later',
+  'auth/operation-not-allowed':'Email login is not enabled in Firebase yet','auth/network-request-failed':'No internet connection'
+};
+async function lsubmit(){
+  const email=$('#lemail').value.trim(),pw=$('#lpass').value,name=$('#lname').value.trim();
+  if(!email||!pw)return lerr('Enter your email and password');
+  if(lm==='up'){
+    if(!name)return lerr('Enter your name');
+    if(pw!==$('#lpass2').value)return lerr('Passwords do not match');
+  }
+  const b=$('#lgo');b.classList.add('busy');lerr('');
+  try{
+    if(lm==='in')await A.signInWithEmailAndPassword(auth,email,pw);
+    else{const r=await A.createUserWithEmailAndPassword(auth,email,pw);await A.updateProfile(r.user,{displayName:name}).catch(()=>{})}
+    closeLogin();toast(lm==='in'?'Logged in':'Account created');
+  }catch(e){lerr(AERR[e.code]||'Something went wrong. Try again')}
+  b.classList.remove('busy');
+}
+$('#ltabs').onclick=e=>{const b=e.target.closest('[data-m]');if(b)setLm(b.dataset.m)};
+$('#lgo').onclick=lsubmit;
+$('#lp').onkeydown=e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT')lsubmit()};
+$('#lback').onclick=closeLogin;
+$('#lgoogle').onclick=async()=>{await login();if(auth.currentUser)closeLogin()};
+$('#lforgot').onclick=async()=>{
+  const email=$('#lemail').value.trim();
+  if(!email)return lerr('Enter your email first, then tap “Forgot password?”');
+  try{await A.sendPasswordResetEmail(auth,email);lerr('Password reset link sent. Check your email.',true)}
+  catch(e){lerr(AERR[e.code]||'Could not send reset email')}
+};
+function renderDash(){
+  if(!user)return;
+  const L=Object.values(D),by=k=>L.filter(v=>v.type===k).length;
+  let d=0,n=0;L.forEach(v=>{const s=cnt(v);d+=s.d;n+=s.n});
+  $('#dprof').innerHTML=`<div class="lg">${user.photoURL?`<img src="${esc(user.photoURL)}" alt="">`:ic('user',30)}</div><div style="min-width:0"><b>${esc(user.displayName||'Brainmate user')}</b><small>${esc(user.email||'')}</small></div>`;
+  $('#dstats').innerHTML=`<div><small>Creations</small><b>${by('project')}</b></div><div><small>Imagination</small><b>${by('idea')}</b></div><div><small>Aspiration</small><b>${by('dream')}</b></div>`;
+}
+const openDash=()=>{renderDash();$('#dp').classList.add('on');scrollTo(0,0)};
+const closeDash=()=>$('#dp').classList.remove('on');
+$('#dback').onclick=closeDash;
+$('#dp').onclick=e=>{const b=e.target.closest('[data-do]');if(b)$('#'+b.dataset.do).click()};
+$('#dout').onclick=()=>{if(confirm('Log out?')){closeDash();A.signOut(auth)}};
+$('#sign').onclick=()=>{if(!auth)return toast('Login needs Firebase');user?openDash():openLogin()};
+function goHome(){sd1.flush();sd2.flush();if($('#dp').classList.contains('on'))renderDash();cur=null;$('#detail').classList.add('hide');$('#home').classList.remove('hide');closeModal();home();scrollTo(0,0)}
+/* ====== Edit these placeholders ====== */
+const SITE={
+  about:'Brainmate helps you keep your creations, imagination and aspirations in one place.\n\nReplace this text with your own story.',
+  email:'hello@example.com',
+  otherApp:'https://example.com'
+};
+$('#abt').textContent=SITE.about;
+$('#ab').onclick=()=>{$('#dd').classList.remove('on');$('#am').classList.add('on')};
+$('#aclose').onclick=()=>$('#am').classList.remove('on');
+$('#am').onclick=e=>{if(e.target.id==='am')$('#am').classList.remove('on')};
+$('#ct').onclick=()=>{$('#dd').classList.remove('on');location.href='mailto:'+SITE.email};
+$('#oa').onclick=()=>{$('#dd').classList.remove('on');window.open(SITE.otherApp,'_blank','noopener')};
 $('#brand').onclick=goHome;$('#hlogo').onclick=e=>{e.stopPropagation();$('#dd').classList.toggle('on')};
 document.addEventListener('click',e=>{if(!e.target.closest('#dd'))$('#dd').classList.remove('on')});
-addEventListener('keydown',e=>e.key==='Escape'&&$('#dd').classList.remove('on'));
+addEventListener('keydown',e=>{if(e.key==='Escape'){$('#dd').classList.remove('on');$('#am').classList.remove('on');closeLogin();closeDash()}});
 
 const DEMO={
 project:[
@@ -345,7 +508,7 @@ function home(){
   $('#secs').innerHTML=h;
 }
 $('#secs').addEventListener('click',e=>{
-  if(e.target.closest('[data-login]'))return login();
+  if(e.target.closest('[data-login]'))return openLogin();
   const f=e.target.closest('[data-f]');if(f){filter=f.dataset.f;return home()}
   const x=e.target.closest('[data-del]');if(x){e.stopPropagation();return delItem(x.dataset.del)}
   const n=e.target.closest('[data-new]');if(n)return openModal({type:n.dataset.new});
@@ -353,7 +516,7 @@ $('#secs').addEventListener('click',e=>{
 });
 function delItem(id){
   if(!confirm('Delete this permanently?'))return;
-  if(cloud())F.deleteDoc(F.doc(db,'items',id));
+  if(cloud())F.deleteDoc(dref(id)).catch(e=>fail('Delete failed',e));
   delete D[id];if(!cloud())saveLocal();goHome();
 }
 
@@ -370,7 +533,7 @@ $('#msave').onclick=async()=>{
   if(mode.id){save(mode.id,{name,desc});closeModal();openDetail(mode.id)}
   else{
     const data={...DF(),type:mode.type,name,desc,ts:Date.now()};
-    if(cloud()){const r=await F.addDoc(F.collection(db,'items'),{...data,created:F.serverTimestamp()});D[r.id]=data}
+    if(cloud()){try{const r=await F.addDoc(col(),{...data,created:F.serverTimestamp()});D[r.id]=data}catch(e){return fail('Could not create',e)}}
     else{D['l'+Date.now()]=data;saveLocal()}
     closeModal();home();
   }
@@ -434,20 +597,23 @@ function loadGuest(){
   else{demoItems().forEach((x,i)=>D['d'+i]=x);saveLocal()}
 }
 function listen(){
-  unsub=F.onSnapshot(F.collection(db,'items'),s=>{
-    if(s.empty&&!seeded&&!s.metadata.fromCache){seeded=true;try{localStorage.setItem('mw_seeded','1')}catch(e){}demoItems().forEach(x=>F.addDoc(F.collection(db,'items'),{...x,created:F.serverTimestamp()}));return}
+  let seeded=false;try{seeded=!!localStorage.getItem('mw_seeded_'+user.uid)}catch(e){}
+  unsub=F.onSnapshot(col(),s=>{
+    if(s.empty&&!seeded&&!s.metadata.fromCache){seeded=true;try{localStorage.setItem('mw_seeded_'+user.uid,'1')}catch(e){}demoItems().forEach(x=>F.addDoc(col(),{...x,created:F.serverTimestamp()}));return}
     s.docChanges().forEach(c=>{
       if(c.type==='removed')delete D[c.doc.id];
       else if(c.doc.id!==cur)D[c.doc.id]={...DF(),...c.doc.data()};
     });
     if(!cur)home();
-  });
+  },e=>fail('Could not load your data',e));
 }
 {const I={all:'home',project:'blocks',idea:'brain',dream:'target'};document.querySelectorAll('.bar .chip').forEach(c=>c.insertAdjacentHTML('afterbegin',c.dataset.k==='idea'?'<span class="ico">'+ic(I.idea,20)+'<i></i><i></i><i></i></span>':c.dataset.k==='dream'?'<span class="ico">'+ic(I.dream,20)+'<svg class="ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L12 12M12 12h5M12 12V7"/></svg></span>':c.dataset.k==='project'?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 21V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H3"/><rect class="bk" width="7" height="7" x="14" y="3" rx="1"/></svg>':ic(I[c.dataset.k],20)))}
 document.querySelectorAll('.bar .chip').forEach(c=>c.onclick=()=>{filter=c.dataset.k;goHome()});
+addEventListener('pagehide',()=>{sd1.flush();sd2.flush()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){sd1.flush();sd2.flush()}});
 nav();
 if(auth)A.onAuthStateChanged(auth,u=>{
-  user=u;nav();
+  user=u;nav();if(!u)closeDash();
   if(unsub){unsub();unsub=null}
   Object.keys(D).forEach(k=>delete D[k]);
   if(u)listen();else loadGuest();
