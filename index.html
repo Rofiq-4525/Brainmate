@@ -48,6 +48,7 @@ button.d{color:var(--red)}
 .row .chip{border:1px solid var(--line);flex:none;padding:6px 14px;font-size:.95rem}
 .sh{display:flex;justify-content:space-between;align-items:center;margin:28px 0 14px}
 .sh h2{font-size:1.15rem;font-weight:700}
+.grid+.sh{border-top:1px solid var(--line);margin-top:30px;padding-top:26px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;position:relative;transition:.15s}
 .card:hover{border-color:var(--mut)}
@@ -65,6 +66,14 @@ button.d{color:var(--red)}
 .card.empty:hover{box-shadow:none}
 .card.empty .im{background:transparent;color:var(--mut);aspect-ratio:16/7}
 .card.empty .nm{color:var(--mut);font-weight:400;font-size:.95rem}
+#back,#dback,#lback{background:none;border:none;box-shadow:none;padding:6px 10px 6px 0;min-height:0;color:var(--mut);display:inline-flex;align-items:center}
+#back:hover,#dback:hover,#lback:hover,#back:active,#dback:active,#lback:active{background:none;box-shadow:none;color:var(--ink)}
+.dmw{position:relative}
+.dm{left:auto;right:0;min-width:160px}
+#dots{background:none;border:none;box-shadow:none;padding:6px 2px 6px 10px;min-height:0;color:var(--mut);display:inline-flex;align-items:center}
+#dots:hover,#dots:active{background:none;box-shadow:none;color:var(--ink)}
+.card.empty .im svg{opacity:.28;transition:opacity .15s}
+.card.empty:hover .im svg{opacity:.5}
 input,textarea{font:inherit;width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
 input:focus,textarea:focus{outline:1px solid var(--mut);outline-offset:-1px;border-color:transparent}
 textarea{resize:vertical;min-height:130px}
@@ -340,6 +349,7 @@ const P={
  bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10c1 1 1 2 1 3h6c0-1 0-2 1-3a6 6 0 0 0-4-10z"/>',
  upload:'<path d="M12 3v12"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/>',
  history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
+ dots:'<circle cx="12" cy="5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/>',
  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8h.01"/>',
  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 6L2 7"/>',
@@ -352,6 +362,8 @@ const D={};let loading=false,authWait=false,guestLoaded=false,cacheUid=null,pre=
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const deb=(f,ms=600)=>{let t=null,a=[];const g=(...x)=>{a=x;clearTimeout(t);t=setTimeout(()=>{t=null;f(...a)},ms)};g.flush=()=>{if(t){clearTimeout(t);t=null;f(...a)}};return g};
+const OLD_DEMO={'Personal Website':'A website to showcase my work and writing in one place.','Write a Book':'Plan to write a little every day.','Fitness Routine':'Exercise at least 4 days a week.','Online Course':'A course to build skills from home.','Own Home':'A home of our own for the family.','World Travel':'Visit at least 10 countries in life.','Own Company':'Build a company of my own.','Start a Library':'A small library open to everyone.','Mobile App Idea':'An app with simple solutions to everyday problems.','YouTube Channel':'Explain what I know in simple language.','Community Library':'Sharing books among neighbors.','Kids Learning Game':'A game to learn math and language through play.'};
+const isDemo=v=>!!v&&((/^Demo [1-4]$/.test(v.name||'')&&(v.desc||'').startsWith("It's a demo."))||OLD_DEMO[v.name]===v.desc);
 const cacheSave=deb(()=>{if(!cloud())return;try{localStorage.setItem('bm_cache_v1',JSON.stringify({uid:user.uid,items:D}))}catch(e){}},1500);
 const col=()=>F.collection(db,'users',user.uid,'items'),dref=id=>F.doc(db,'users',user.uid,'items',id);
 const fail=(m,e)=>{console.warn(e);toast(m+(e&&(e.code||e.message)?': '+(e.code||e.message):''))};
@@ -453,11 +465,11 @@ const cnt=v=>{const L=v.checklist,d=L.filter(x=>x.d).length;return{d,n:L.length,
 
 function nav(){
   const b=$('#sign');
-  $('#hlogo').innerHTML=ic('menu',24);$('#lback').innerHTML=ic('back',18)+' Back';
+  $('#hlogo').innerHTML=ic('menu',24);$('#lback').innerHTML=ic('back',22);$('#lback').setAttribute('aria-label','Back');
   $('#ab').innerHTML=ic('info',18)+'<span>About us</span>';$('#ct').innerHTML=ic('mail',18)+'<span>Contact us</span>';$('#oa').innerHTML=ic('apps',18)+'<span>Our other app</span>';
   $('#bk').innerHTML=ic('cloud',18)+'<span>Backup to Google Drive</span>';$('#ex').innerHTML=ic('download',18)+'<span>Export data</span>';$('#im').innerHTML=ic('upload',18)+'<span>Import data</span>';
   ['#ex','#im'].forEach(k=>$(k).classList.toggle('hide',!!user));$('#bk').classList.add('hide');
-  $('#dback').innerHTML=ic('back',18)+' Back';$('#dout').innerHTML=ic('login',16)+' Log out';
+  $('#dback').innerHTML=ic('back',22);$('#dback').setAttribute('aria-label','Back');$('#dout').innerHTML=ic('login',16)+' Log out';
   document.querySelector('[data-bk=restore]').innerHTML=ic('history',18)+'<span><b>Restore from backup</b><small>Go back to an earlier saved copy</small></span>';
   document.querySelector('[data-do=ex]').innerHTML=ic('download',18)+'<span><b>Export data</b><small>Download all your items as a JSON file</small></span>';
   document.querySelector('[data-do=im]').innerHTML=ic('upload',18)+'<span><b>Import data</b><small>Add items from a Brainmate JSON file</small></span>';
@@ -606,11 +618,9 @@ $('#am').onclick=e=>{if(e.target.id==='am')$('#am').classList.remove('on')};
 $('#ct').onclick=()=>{$('#dd').classList.remove('on');location.href='mailto:'+SITE.email};
 $('#oa').onclick=()=>{$('#dd').classList.remove('on');window.open(SITE.otherApp,'_blank','noopener')};
 $('#brand').onclick=goHome;$('#hlogo').onclick=e=>{e.stopPropagation();$('#dd').classList.toggle('on')};
-document.addEventListener('click',e=>{if(!e.target.closest('#dd'))$('#dd').classList.remove('on')});
+document.addEventListener('click',e=>{if(!e.target.closest('#dd'))$('#dd').classList.remove('on');const m=$('#dm');if(m&&!e.target.closest('.dmw'))m.classList.remove('on')});
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeRm();$('#dd').classList.remove('on');$('#am').classList.remove('on');closeLogin();closeDash()}});
 
-const DEMO_DESC="It's a demo. Brainmate — create your own or edit this demo as you need.";
-const demoItems=()=>{let n=Date.now();return Object.keys(TYPES).flatMap(type=>[1,2,3,4].map(i=>({...DF(),type,name:'Demo '+i,title:'',desc:DEMO_DESC,image:'',ts:n++})))};
 let seeded=false;try{seeded=!!localStorage.getItem('mw_seeded')}catch(e){}
 
 function home(){
@@ -623,7 +633,7 @@ function home(){
   h+=Object.entries(TYPES).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
     const items=Object.entries(D).filter(([,v])=>v.type===k).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
     let c=items.map(([id,v])=>{const s=cnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im${v.image?'':' ph'}">${v.image?`<img src="${v.image}" alt="" loading="lazy" decoding="async">`:`<div class="blur${v.desc?'':' empty'}">${blurText(v)}</div>`}</div><div class="tx"><div class="nm">${esc(v.name)}</div></div></div>`}).join('');
-    if(!items.length)c=`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im">${ic('plus',34)}</div><div class="tx"><div class="nm">Empty — click to add</div></div></div>`;
+    c+=`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im">${ic('plus',34)}</div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,4-items.length));
     return `<div class="sh" data-t="${k}"><h2>${t.l}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid">${c}</div>`;
   }).join('');
   $('#secs').innerHTML=h;
@@ -666,14 +676,15 @@ function openDetail(id){
   cur=id;tab='desc';const v=D[id],t=TYPES[v.type];
   $('#home').classList.add('hide');const el=$('#detail');el.classList.remove('hide');el.dataset.t=v.type;
   el.innerHTML=`
-  <div class="row" style="margin-top:14px;justify-content:space-between"><button id="back">${ic('back',18)} Back</button><div class="row"><button id="edit">${ic('edit',16)} Edit</button><button class="d" id="del">${ic('trash',16)} Delete</button></div></div>
+  <div class="row" style="margin-top:14px;justify-content:space-between"><button id="back" aria-label="Back" title="Back">${ic('back',22)}</button><div class="dmw"><button id="dots" aria-label="More options" title="More" aria-haspopup="true">${ic('dots',22)}</button><div class="dd dm" id="dm"><button id="edit">${ic('edit',16)} Edit</button><button class="d" id="del">${ic('trash',16)} Delete</button></div></div></div>
   <div class="dh"><div class="lg">${v.image?`<img src="${v.image}" alt="">`:ic(t.i,32)}</div><div style="min-width:0"><h2>${esc(v.name)}</h2><div class="st">${esc(v.title)}</div><div class="meta"><span class="bd" id="hs"></span><span id="hn"></span></div></div></div>
   <div class="tabs">${TABS.map(([k,l])=>`<button class="tab ${k===tab?'on':''}" data-tab="${k}">${l}</button>`).join('')}</div>
   <div id="tc"></div>`;
   scrollTo(0,0);
   $('#back').onclick=goHome;
-  $('#edit').onclick=()=>openModal({id});
-  $('#del').onclick=()=>delItem(id);
+  $('#dots').onclick=e=>{e.stopPropagation();$('#dm').classList.toggle('on')};
+  $('#edit').onclick=()=>{$('#dm').classList.remove('on');openModal({id})};
+  $('#del').onclick=()=>{$('#dm').classList.remove('on');delItem(id)};
   el.querySelector('.tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;tab=b.dataset.tab;el.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));renderTab()};
   bindTc();hero();renderTab();
 }
@@ -717,12 +728,11 @@ function bindTc(){
 function loadGuest(){
   let o=null;try{o=JSON.parse(localStorage.getItem(LK)||'null')}catch(e){}
   if(o&&Object.keys(o).length)Object.entries(o).forEach(([k,v])=>D[k]={...DF(),...v});
-  else{demoItems().forEach((x,i)=>D['d'+i]=x);saveLocal()}
+  let rm=0;Object.keys(D).forEach(k=>{if(isDemo(D[k])){delete D[k];rm++}});if(rm)saveLocal();
 }
 function listen(){
-  let seeded=false,first=true;try{seeded=!!localStorage.getItem('mw_seeded_'+user.uid)}catch(e){}
+  let first=true;
   unsub=F.onSnapshot(col(),s=>{
-    if(s.empty&&!seeded&&!s.metadata.fromCache){seeded=true;try{localStorage.setItem('mw_seeded_'+user.uid,'1')}catch(e){}demoItems().forEach(x=>F.addDoc(col(),{...x,created:F.serverTimestamp()}));return}
     const real=!s.metadata.fromCache||!s.empty;
     if(first&&real){first=false;const ids=new Set(s.docs.map(d=>d.id));Object.keys(D).forEach(k=>{if(!ids.has(k))delete D[k]})}
     if(loading&&real){loading=false;clearTimeout(lt)}
@@ -730,6 +740,7 @@ function listen(){
       if(c.type==='removed')delete D[c.doc.id];
       else if(c.doc.id!==cur)D[c.doc.id]={...DF(),...c.doc.data()};
     });
+    if(!s.metadata.fromCache)Object.keys(D).forEach(id=>{if(isDemo(D[id])&&id!==cur){delete D[id];F.deleteDoc(dref(id)).catch(()=>{})}});
     cacheSave();
     if(!cur)home();
   },e=>{loading=false;fail('Could not load your data',e);home()});
