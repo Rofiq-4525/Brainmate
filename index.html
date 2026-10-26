@@ -255,7 +255,11 @@ button.d:hover{box-shadow:var(--press)}
 <script type="module">
 const PI={l:'icons/logo.png'};document.querySelectorAll('[data-p]').forEach(i=>i.src=PI[i.dataset.p]);document.documentElement.style.setProperty('--logo-img','url('+PI.l+')');
 /* ====== PWA: service worker + install prompt ====== */
-if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW',e));
+if('serviceWorker' in navigator&&location.protocol!=='file:'){
+  const hadCtl=!!navigator.serviceWorker.controller;let rl=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadCtl||rl)return;rl=true;try{sd1.flush();sd2.flush()}catch(e){}location.reload()});
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(e=>console.warn('SW',e));
+}
 let installEv=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEv=e;document.getElementById('inst').classList.remove('hide')});
 addEventListener('appinstalled',()=>{installEv=null;document.getElementById('inst').classList.add('hide')});
@@ -476,24 +480,8 @@ $('#brand').onclick=goHome;$('#hlogo').onclick=e=>{e.stopPropagation();$('#dd').
 document.addEventListener('click',e=>{if(!e.target.closest('#dd'))$('#dd').classList.remove('on')});
 addEventListener('keydown',e=>{if(e.key==='Escape'){$('#dd').classList.remove('on');$('#am').classList.remove('on');closeLogin();closeDash()}});
 
-const DEMO={
-project:[
-['Personal Website','Portfolio & blog','In progress','Finalize design|Write content|Buy domain|Launch website',2,'Home page|Blog section|Contact form','A website to showcase my work and writing in one place.'],
-['Write a Book','First book manuscript','In progress','Create outline|First 5 chapters|Edit draft|Find a publisher',1,'Chapter list|Cover ideas','Plan to write a little every day.'],
-['Fitness Routine','Healthy habits','On hold','Set a routine|Start morning walks|Meal plan',1,'Weekly chart|Water intake log','Exercise at least 4 days a week.'],
-['Online Course','Learn a new skill','Done','Modules 1–5|Modules 6–10|Final exam',3,'Save notes|Certificate','A course to build skills from home.']],
-dream:[
-['Own Home','Dream address','In progress','Set budget|Find land|Get design drawn|Start construction',1,'Budget list|Design ideas','A home of our own for the family.'],
-['World Travel','See the world','In progress','Country list|Start saving|Renew passport',1,'Destinations|Travel budget','Visit at least 10 countries in life.'],
-['Own Company','My own venture','On hold','Business idea|Market research|Initial capital|License',0,'Business plan|Potential partners','Build a company of my own.'],
-['Start a Library','A book house for the village','In progress','Find a location|Collect books|Shelves & furniture|Opening',1,'Book list|Volunteers','A small library open to everyone.']],
-idea:[
-['Mobile App Idea','Daily task helper','In progress','Identify the problem|Design draft|Prototype',1,'User list|Core features','An app with simple solutions to everyday problems.'],
-['YouTube Channel','Learn & teach','On hold','Choose a topic|First video script|Make the video',0,'Video list|Thumbnail ideas','Explain what I know in simple language.'],
-['Community Library','Book exchange','In progress','Write a proposal|Find members|Collect books',1,'Member list|Book register','Sharing books among neighbors.'],
-['Kids Learning Game','Learn while playing','In progress','Story draft|Draw characters|First level',1,'Level list|Reward system','A game to learn math and language through play.']]
-};
-const demoItems=()=>{let n=Date.now();return Object.entries(DEMO).flatMap(([type,l])=>l.map(([name,title,status,ck,dn,ft,desc])=>({...DF(),type,name,title,status,desc,image:'',checklist:ck.split('|').map((t,i)=>({t,d:i<dn})),features:ft.split('|'),ts:n++})))};
+const DEMO_DESC="It's a demo. Brainmate — create your own or edit this demo as you need.";
+const demoItems=()=>{let n=Date.now();return Object.keys(TYPES).flatMap(type=>[1,2,3,4].map(i=>({...DF(),type,name:'Demo '+i,title:'',desc:DEMO_DESC,image:'',ts:n++})))};
 let seeded=false;try{seeded=!!localStorage.getItem('mw_seeded')}catch(e){}
 
 function home(){
