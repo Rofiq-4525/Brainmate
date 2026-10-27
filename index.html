@@ -384,6 +384,7 @@ html,body{background:var(--bg)}
 /* Tablet + PC: navigation menu on the left side instead of the bottom */
 @media(min-width:768px){
   body{padding-bottom:40px}
+  .top{z-index:20} /* header menu opens above the sidebar */
   .bar{left:0;right:auto;bottom:0;top:57px;width:96px;padding:0;display:block;border-top:none;border-right:1px solid var(--line);box-shadow:none;overflow-y:auto}
   .bar{overflow:hidden}
   .bar .chips{flex-direction:column;justify-content:stretch;align-items:stretch;gap:8px;width:100%;height:100%;padding:8px 6px;overflow:hidden}
