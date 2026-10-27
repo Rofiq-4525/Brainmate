@@ -362,6 +362,11 @@ html,body{background:var(--bg)}
   #secs .card.sk .im{aspect-ratio:16/7}
 }
 @media(min-width:1024px){#secs .grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* Empty slots: same size as filled cards (hidden placeholder lines hold the height) */
+.card.empty .im.cn{position:relative;aspect-ratio:auto}
+.card.empty .im.cn>div{visibility:hidden}
+.card.empty .im.cn .pl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+#secs .card.empty .im.cn{aspect-ratio:auto}
 @media(min-width:768px) and (max-width:1023px){
   #secs{padding:0 40px}
   #secs .tx{padding:7px 12px 9px}
@@ -810,7 +815,7 @@ function home(){
   h+=Object.entries(TYPES).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
     const items=Object.entries(D).filter(([,v])=>v.type===k).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
     let c=items.map(([id,v])=>{const s=cnt(v),n=nCnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im cn"><div class="ch">Total note: ${n.t}</div><div>Rough note: ${n.r}</div><div>Full note: ${n.f}</div></div><div class="tx"><div class="nm">${esc(v.name)}</div></div></div>`}).join('');
-    c+=`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im">${ic('plus',34)}</div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,slots()-items.length));
+    c+=`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im cn"><div class="ch">Total note: 0</div><div>Rough note: 0</div><div>Full note: 0</div><span class="pl">${ic('plus',34)}</span></div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,slots()-items.length));
     return `<div class="sh" data-t="${k}"><h2>${t.l}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid">${c}</div>`;
   }).join('');
   $('#secs').innerHTML=h;
