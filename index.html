@@ -429,12 +429,36 @@ html,body{background:var(--bg)}
 #cp textarea{min-height:90px;width:100%}
 #cpbtns{display:flex;gap:8px;flex-wrap:wrap}
 #cplist{display:grid;gap:12px}
-.ck{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:8px;box-shadow:var(--raise)}
+.cpc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:8px;box-shadow:var(--raise)}
 .cktx{white-space:pre-wrap;overflow-wrap:anywhere;max-height:12em;overflow:auto;font-size:.95rem}
 .ckmt{color:var(--mut);font-size:.78rem}
 .ckf{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .ckb{display:flex;gap:6px}
 .ckb button,.ckb a{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:none;color:var(--ink);font-size:.82rem;text-decoration:none;cursor:pointer;min-height:0}
+/* Mobile: tighter detail-page header */
+@media(max-width:560px){
+  #detail .dh{padding:8px 12px;gap:10px;margin-top:0}
+  #detail #back{padding-top:2px;padding-bottom:2px}
+  #detail .dtop{border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:10px}
+  #detail .tabs{margin-top:0}
+  #detail .tab{padding:4px 8px;min-height:0;font-size:.8rem;font-weight:500}
+  #detail .tab.on{font-weight:500}
+  #detail .nh1{text-align:center;font-size:1.1rem;font-weight:600}
+  #detail .nhd .chips{margin-top:6px!important;gap:6px}
+  #detail .nhd .chip{padding:3px 10px;min-height:0;font-size:.72rem;opacity:.7}
+  #nlist{margin-top:10px}
+  #detail .dh{margin-bottom:0}
+  #detail #dots{padding:2px 6px;min-height:0}
+  #detail .dh h2{line-height:1.2}
+  #detail .dh .lg{width:48px;height:48px}
+}
+/* List item details */
+.lcp .ckw{border-bottom:1px solid var(--line)}
+.lcp .ckw .ck{border-bottom:none}
+.ck span[data-a=xopen]{cursor:pointer}
+.ckp{display:block;color:var(--mut);font-size:.8rem;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ckd{padding:0 0 12px}
+.ckd textarea{width:100%;min-height:90px}
 .cd{font-size:.64rem;color:var(--mut);line-height:1.45;opacity:.6;font-weight:500}
 @keyframes pgFade{from{opacity:0}to{opacity:1}}
 @keyframes pgUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -606,7 +630,7 @@ copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.
 file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>'
 };
 const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${P[n]}</svg>`;
-const DF=()=>({checklist:[],features:[],notes:[],desc:'',rough:'',roughNotes:[],fullNotes:[],driveId:'',status:'In progress'});
+const DF=()=>({checklist:[],features:[],lists:[],checks:[],notes:[],desc:'',rough:'',roughNotes:[],fullNotes:[],driveId:'',status:'In progress'});
 const D={};let loading=false,authWait=false,guestLoaded=false,cacheUid=null,pre='guest',lt=null;let cur=null,tab='rough',filter='all',mode=null,user=null,unsub=null;
 
 const $=s=>document.querySelector(s);
@@ -715,7 +739,7 @@ const nCnt=v=>{const a=x=>(x||[]).filter(n=>!n.tr).length;let r=a(v.roughNotes),
 const lastEd=v=>{let m=Math.max(v.upd||0,v.ts||0);[...(v.roughNotes||[]),...(v.fullNotes||[])].forEach(n=>{m=Math.max(m,n.up||n.at||0)});return m};
 const hD=t=>t?new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
 const hDT=t=>t?new Date(t).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}):'—';
-const cnt=v=>{const L=v.checklist,d=L.filter(x=>x.d).length;return{d,n:L.length,p:L.length?Math.round(d/L.length*100):0}};
+const cnt=v=>{const L=v.lm?(v.checks||[]).flatMap(c=>c.items):v.checklist,d=L.filter(x=>x.d).length;return{d,n:L.length,p:L.length?Math.round(d/L.length*100):0}};
 
 function nav(){
   const b=$('#sign');
@@ -858,7 +882,7 @@ $('#dp').onclick=e=>{
 };
 $('#dout').onclick=()=>{if(confirm('Log out?')){closeDash();A.signOut(auth)}};
 $('#sign').onclick=()=>{if(!auth)return toast(fbDone?'Login needs Firebase':'Still loading… try again in a moment');user?openDash():openLogin()};
-function goHome(){sd1.flush();sd2.flush();if(nid&&cur&&D[cur])dropEmpty();nid=null;$('#npg').classList.remove('on');$('#lcp').classList.remove('on');if($('#dp').classList.contains('on'))renderDash();cur=null;$('#detail').classList.add('hide');$('#home').classList.remove('hide');closeModal();home();scrollTo(0,0)}
+function goHome(){sd1.flush();sd2.flush();if(nid&&cur&&D[cur])dropEmpty();nid=null;lid=null;$('#npg').classList.remove('on');$('#lcp').classList.remove('on');if($('#dp').classList.contains('on'))renderDash();cur=null;$('#detail').classList.add('hide');$('#home').classList.remove('hide');closeModal();home();scrollTo(0,0)}
 /* ====== Edit these placeholders ====== */
 const SITE={
   about:'Brainmate helps you keep your creations, imagination and aspirations in one place.\n\nReplace this text with your own story.',
@@ -880,7 +904,7 @@ function renderClips(){
   if(!clipItems.length){el.innerHTML='<div class="mut" style="text-align:center;padding:24px 0">Nothing here yet.</div>';return}
   el.innerHTML=clipItems.map(c=>{
     const when=new Date(c.at||Date.now()).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-    return `<div class="ck"><div class="cktx">${esc(c.text)}</div><div class="ckf"><span class="ckmt">${when}</span><span class="ckb"><button data-ck="copy" data-id="${c.id}">${ic('copy',16)}<span>Copy</span></button><button data-ck="del" data-id="${c.id}" aria-label="Delete">${ic('trash',16)}</button></span></div></div>`;
+    return `<div class="cpc"><div class="cktx">${esc(c.text)}</div><div class="ckf"><span class="ckmt">${when}</span><span class="ckb"><button data-ck="copy" data-id="${c.id}">${ic('copy',16)}<span>Copy</span></button><button data-ck="del" data-id="${c.id}" aria-label="Delete">${ic('trash',16)}</button></span></div></div>`;
   }).join('');
 }
 function openClip(){
@@ -983,7 +1007,7 @@ function openDetail(id){
   cur=id;tab='rough';nid=null;const v=D[id],t=TYPES[v.type];
   $('#home').classList.add('hide');const el=$('#detail');el.classList.remove('hide');el.dataset.t=v.type;
   el.innerHTML=`
-  <div class="row" style="margin-top:14px;justify-content:space-between"><button id="back" aria-label="Back" title="Back">${ic('back',22)}</button><div class="dtl">${esc(v.name)}</div><div class="dmw"><button id="dots" aria-label="More options" title="More" aria-haspopup="true">${ic('dots',22)}</button><div class="dd dm" id="dm"><button id="edit">${ic('edit',16)} Edit</button><button class="d" id="del">${ic('trash',16)} Delete</button></div></div></div>
+  <div class="row dtop" style="margin-top:14px;justify-content:space-between"><button id="back" aria-label="Back" title="Back">${ic('back',22)}</button><div class="dtl">${esc(v.name)}</div><div class="dmw"><button id="dots" aria-label="More options" title="More" aria-haspopup="true">${ic('dots',22)}</button><div class="dd dm" id="dm"><button id="edit">${ic('edit',16)} Edit</button><button class="d" id="del">${ic('trash',16)} Delete</button></div></div></div>
   <div class="tabs">${TABS.map(([k,l])=>`<button class="tab ${k===tab?'on':''}" data-tab="${k}">${l}</button>`).join('')}</div>
   <div id="tc"></div>`;
   scrollTo(0,0);
@@ -991,14 +1015,23 @@ function openDetail(id){
   $('#dots').onclick=e=>{e.stopPropagation();$('#dm').classList.toggle('on')};
   $('#edit').onclick=()=>{$('#dm').classList.remove('on');openModal({id})};
   $('#del').onclick=()=>{$('#dm').classList.remove('on');delItem(id)};
-  el.querySelector('.tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;tab=b.dataset.tab;nid=null;el.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));renderTab()};
-  bindTc();nMig();renderTab();
+  el.querySelector('.tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;tab=b.dataset.tab;nid=null;lid=null;el.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));renderTab()};
+  bindTc();nMig();lMig();renderTab();
 }
-let nid=null,lcPrev='rough',lcF='';
+let nid=null,lcPrev='rough',lcF='',lid=null,lx=null,lxF=false;
 const LCT={list:'List',check:'Checklist'};
+const lit=i=>typeof i==='string'?{t:i,x:''}:i;
 const NK={rough:'roughNotes',full:'fullNotes'};
 const grow=t=>{if(!t||t.isContentEditable)return;t.style.height='auto';t.style.height=Math.max(t.scrollHeight,Math.round(innerHeight*.5))+'px'};
 const nUid=()=>'n'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function lMig(){
+  const v=D[cur];if(v.lm||authWait)return;
+  const t=Date.now(),p={lm:1,lists:[...(v.lists||[])],checks:[...(v.checks||[])]};
+  if((v.features||[]).length)p.lists.push({id:nUid(),t:'',items:[...v.features],at:t,up:t});
+  if((v.checklist||[]).length)p.checks.push({id:nUid(),t:'',items:v.checklist.map(x=>({...x})),at:t,up:t});
+  Object.assign(D[cur],p);
+  if(cloud())F.updateDoc(dref(cur),p).catch(e=>fail('Save failed',e));else saveLocal();
+}
 function nMig(){
   const v=D[cur];if(v.nm||authWait)return;
   const t=Date.now(),mk=x=>({id:nUid(),t:'',x,at:t,up:t}),p={};
@@ -1013,6 +1046,16 @@ function nCards(v,k){
   const fd=x=>new Date(x).toLocaleDateString('en-US',{month:'short',day:'numeric'});
   if(!L.length)return `<div class="mut" style="text-align:center;padding:48px 0">${nView==='tr'?'Trash is empty':nView==='ar'?'No archived notes':'No notes yet. Tap + to add one.'}</div>`;
   return `<div class="ngrid">${L.map(x=>`<div class="ncard" data-a="nopen" data-id="${x.id}">${x.t?`<div class="nct">${esc(x.t)}</div>`:''}<div class="ncp">${x.lk?'🔒 Locked note':esc(x.x)}</div><div class="ncd">${fd(x.up||x.at)}</div></div>`).join('')}</div>`;
+}
+function renderLists(v,k){
+  const isL=k==='list',f=isL?'lists':'checks',L=[...v[f]].sort((a,b)=>(b.up||0)-(a.up||0));
+  const fd=x=>new Date(x).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const body=L.length?`<div class="ngrid">${L.map(x=>{
+    const its=x.items,pv=its.slice(0,4).map(i=>isL?'• '+lit(i).t:(i.d?'✓ ':'○ ')+i.t).join('\n');
+    const meta=isL?`${its.length} item${its.length===1?'':'s'}`:`${its.filter(i=>i.d).length}/${its.length} done`;
+    return `<div class="ncard" data-a="lopen" data-id="${x.id}"><div class="nct">${esc(x.t||(isL?'List':'Checklist'))}</div><div class="ncp" style="white-space:pre-line">${esc(pv)||'<span style="opacity:.6">Empty</span>'}</div><div class="ncd">${meta} · ${fd(x.up||x.at)}</div></div>`}).join('')}</div>`
+    :`<div class="mut" style="text-align:center;padding:48px 0">No ${isL?'lists':'checklists'} yet. Tap + to add one.</div>`;
+  return `<div class="nhd"><div class="nh1">${isL?'Lists':'Checklists'}</div></div><div id="nlist">${body}</div><button class="fab" data-a="lnew" aria-label="New" title="New">${ic('plus',24)}</button>`;
 }
 function renderNotes(v,k){
   const c={n:0,ar:0,tr:0};v[NK[k]].forEach(x=>c[x.tr?'tr':x.ar?'ar':'n']++);
@@ -1268,26 +1311,40 @@ function dropEmpty(){
 function closeNote(){snapVer();sd2.flush();dropEmpty();nid=null;renderTab()}
 function renderTab(){
   const v=D[cur],tc=$('#tc');let h='';
-  if(!LCT[tab])lcPrev=tab;
+  if(!LCT[tab])lid=null;
   if(tab!=='rough'&&tab!=='full')nid=null;
   if(tab==='rough'||tab==='full')h=renderNotes(v,tab);
+  if(LCT[tab])h=renderLists(v,tab);
   if(tab==='drive')h=`<div class="panel"><h3>Drive preview</h3><div class="row"><input id="din" data-enter="dset" placeholder="Google Drive folder link or ID" value="${esc(v.driveId?'https://drive.google.com/drive/folders/'+v.driveId:'')}"><button class="p" data-a="dset">Show</button></div><div class="mut" style="margin-top:6px">The folder must be shared as “Anyone with the link — Viewer”.</div>${v.driveId?`<iframe src="https://drive.google.com/embeddedfolderview?id=${v.driveId}#grid" loading="lazy"></iframe>`:''}</div>`;
   tc.innerHTML=h;noteEd();renderLC(v);
 }
 function renderLC(v){
   const lp=$('#lcp');
-  if(!LCT[tab]){lp.classList.remove('on');lp.innerHTML='';return}
+  const LF=tab==='list'?'lists':'checks',LO=LCT[tab]&&lid?v[LF].find(x=>x.id===lid):null;
+  if(!LO){lid=null;lx=null;lp.classList.remove('on');lp.innerHTML='';return}
   const old=lp.querySelector('.nb'),sc=old?old.scrollTop:0,kf=lcF;
   const isL=tab==='list';
+  const rowW=(row,xv,i)=>`<div class="ckw">${row}${lx===i?`<div class="ckd"><textarea id="ckx" data-i="${i}" rows="4" placeholder="Add details…">${esc(xv||'')}</textarea></div>`:''}</div>`;
   const rows=isL
-    ?v.features.map((x,i)=>`<div class="ck"><span>${esc(x)}</span><button class="d" data-a="fdel" data-i="${i}">${ic('x',16)}</button></div>`).join('')||'<div class="mut" style="text-align:center;padding:48px 0">No items yet</div>'
-    :v.checklist.map((x,i)=>`<div class="ck ${x.d?'done':''}"><input type="checkbox" data-a="ctog" data-i="${i}" ${x.d?'checked':''}><span>${esc(x.t)}</span><button class="d" data-a="cdel" data-i="${i}">${ic('x',16)}</button></div>`).join('')||'<div class="mut" style="text-align:center;padding:48px 0">No tasks yet</div>';
-  lp.innerHTML=`<div class="nt"><button data-a="lback" aria-label="Back" title="Back">${ic('back',22)}</button><div class="nttl">${LCT[tab]}</div><span class="lsp"></span></div><div class="nb">${rows}</div><div class="lcadd"><div class="row"><input id="${isL?'fin':'cin'}" data-enter="${isL?'fadd':'cadd'}" placeholder="${isL?'New item…':'New task…'}" autocomplete="off"><button class="p" data-a="${isL?'fadd':'cadd'}">Add</button></div></div>`;
+    ?LO.items.map((x0,i)=>{const x=lit(x0);return rowW(`<div class="ck"><span data-a="xopen" data-i="${i}">${esc(x.t)}${lx!==i&&x.x?`<small class="ckp">${esc(x.x.split('\n')[0])}</small>`:''}</span><button class="d" data-a="fdel" data-i="${i}">${ic('x',16)}</button></div>`,x.x,i)}).join('')||'<div class="mut" style="text-align:center;padding:48px 0">No items yet</div>'
+    :LO.items.map((x,i)=>rowW(`<div class="ck ${x.d?'done':''}"><input type="checkbox" data-a="ctog" data-i="${i}" ${x.d?'checked':''}><span data-a="xopen" data-i="${i}">${esc(x.t)}${lx!==i&&x.x?`<small class="ckp">${esc(x.x.split('\n')[0])}</small>`:''}</span><button class="d" data-a="cdel" data-i="${i}">${ic('x',16)}</button></div>`,x.x,i)).join('')||'<div class="mut" style="text-align:center;padding:48px 0">No tasks yet</div>';
+  lp.innerHTML=`<div class="nt"><button data-a="lback" aria-label="Back" title="Back">${ic('back',22)}</button><input class="nttl" id="ltt" maxlength="80" placeholder="${isL?'List':'Checklist'} title" value="${esc(LO.t)}" autocomplete="off"><button data-a="ldel" aria-label="Delete" title="Delete">${ic('trash',20)}</button></div><div class="nb">${rows}</div><div class="lcadd"><div class="row"><input id="${isL?'fin':'cin'}" data-enter="${isL?'fadd':'cadd'}" placeholder="${isL?'New item…':'New task…'}" autocomplete="off"><button class="p" data-a="${isL?'fadd':'cadd'}">Add</button></div></div>`;
   lp.classList.add('on');
   const nb=lp.querySelector('.nb');nb.scrollTop=kf?nb.scrollHeight:sc;
   if(kf){const f=lp.querySelector('input[data-enter]');if(f)f.focus()}
+  if(lxF){lxF=false;const t=lp.querySelector('#ckx');if(t)t.focus()}
 }
-function closeLC(){tab=lcPrev;document.querySelectorAll('#detail .tab').forEach(x=>x.classList.toggle('on',x.dataset.tab===tab));renderTab()}
+function closeLC(){
+  sd1.flush();
+  const v=D[cur],f=tab==='list'?'lists':'checks',x=v[f].find(y=>y.id===lid);
+  if(x&&!(x.t||'').trim()&&!x.items.length)save(cur,{[f]:v[f].filter(y=>y!==x)});
+  lid=null;lx=null;renderTab();
+}
+$('#lcp').oninput=e=>{
+  const v=D[cur],f=tab==='list'?'lists':'checks',x=v[f].find(y=>y.id===lid);if(!x)return;
+  if(e.target.id==='ltt'){x.t=e.target.value;x.up=Date.now();sd1(cur,{[f]:v[f]});return}
+  if(e.target.id==='ckx'){const i=+e.target.dataset.i;x.items[i]={...lit(x.items[i]),x:e.target.value};x.up=Date.now();sd1(cur,{[f]:v[f]})}
+};
 $('#lcp').onclick=e=>{
   const b=e.target.closest('[data-a]');if(!b)return;
   const a=b.dataset.a;
@@ -1344,11 +1401,18 @@ function bindTc(){
     else if(a==='nnew'){nView='n';const f=NK[tab],t=Date.now(),n={id:nUid(),t:'',x:'',at:t,up:t};save(cur,{[f]:[...v[f],n]});nid=n.id;renderTab();$('#ntt')?.focus()}
     else if(a==='nopen'){nid=b.dataset.id;renderTab();window.scrollTo(0,0)}
     else if(a==='ndel'){if(!confirm('Delete this note?'))return;sd2.flush();const f=NK[tab];save(cur,{[f]:v[f].filter(x=>x.id!==nid)});nid=null;renderTab()}
-    else if(a==='fadd'){const t=inp('#fin');if(!t)return;save(cur,{features:[...v.features,t]});renderTab()}
-    else if(a==='fdel'){const f=[...v.features];f.splice(i,1);save(cur,{features:f});renderTab()}
-    else if(a==='cadd'){const t=inp('#cin');if(!t)return;save(cur,{checklist:[...v.checklist,{t,d:false}]});renderTab()}
-    else if(a==='ctog'){const L=v.checklist.map(x=>({...x}));L[i].d=b.checked;save(cur,{checklist:L});renderTab()}
-    else if(a==='cdel'){const L=[...v.checklist];L.splice(i,1);save(cur,{checklist:L});renderTab()}
+    else if(a==='lnew'){const f=tab==='list'?'lists':'checks',t=Date.now(),n={id:nUid(),t:'',items:[],at:t,up:t};save(cur,{[f]:[...v[f],n]});lid=n.id;lx=null;lcF='1';renderTab();lcF=''}
+    else if(a==='xopen'){lx=lx===i?null:i;lxF=lx!==null;renderTab()}
+    else if(a==='lopen'){lid=b.dataset.id;lx=null;renderTab()}
+    else if(a==='ldel'){if(!confirm('Delete this '+(tab==='list'?'list':'checklist')+'?'))return;const f=tab==='list'?'lists':'checks';save(cur,{[f]:v[f].filter(x=>x.id!==lid)});lid=null;renderTab()}
+    else if(a==='fadd'||a==='fdel'||a==='cadd'||a==='ctog'||a==='cdel'){
+      const f=tab==='list'?'lists':'checks';let fn=null;if(a!=='ctog')lx=null;
+      if(a==='fadd'){const t=inp('#fin');if(!t)return;fn=x=>({...x,items:[...x.items,t]})}
+      else if(a==='cadd'){const t=inp('#cin');if(!t)return;fn=x=>({...x,items:[...x.items,{t,d:false}]})}
+      else if(a==='ctog'){const d=b.checked;fn=x=>({...x,items:x.items.map((y,j)=>j===i?{...y,d}:y)})}
+      else fn=x=>({...x,items:x.items.filter((_,j)=>j!==i)});
+      save(cur,{[f]:v[f].map(x=>x.id===lid?{...fn(x),up:Date.now()}:x)});renderTab();
+    }
     else if(a==='dset'){const s=inp('#din'),m=s.match(/folders\/([\w-]+)/)||s.match(/[?&]id=([\w-]+)/)||s.match(/^([\w-]{15,})$/);save(cur,{driveId:m?m[1]:''});renderTab()}
   };
   tc.onkeydown=e=>{const k=e.target.dataset.enter;if(e.key==='Enter'&&k)tc.querySelector(`[data-a="${k}"]`).click()};
