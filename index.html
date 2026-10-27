@@ -324,6 +324,18 @@ button.d:hover{box-shadow:var(--press)}
 #ncv.on{pointer-events:auto;cursor:crosshair}
 #ncv.erase{cursor:cell}
 
+.lcp{position:fixed;inset:0;z-index:30;background:var(--card);display:none;flex-direction:column;height:100vh;height:100dvh;padding-top:env(safe-area-inset-top,0px)}
+.lcp.on{display:flex}
+.lcp .nt .lsp{width:42px;flex:none;display:block}
+.lcp .nb{padding-top:6px}
+.lcp .ck{padding:14px 0;font-size:1.02rem}
+.lcp .ck span{overflow-wrap:anywhere}
+.lcp .ck input[type=checkbox]{padding:0}
+.lcp .ck button{padding:10px}
+.lcadd{flex:none;border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--card)}
+.lcadd .row{max-width:728px;margin:0 auto}
+html{background:var(--bg)}
+.top{padding-top:env(safe-area-inset-top,0px)}
 /* ====== Samsung-style notes list ====== */
 .nhd{margin-top:12px;padding:0 4px}
 .nh1{font-size:1.3rem;font-weight:700;line-height:1.2;letter-spacing:-.2px}
@@ -347,6 +359,7 @@ button.d:hover{box-shadow:var(--press)}
 
 <nav class="bar"><div class="chips"><button class="chip on" data-k="all">All</button><button class="chip" data-k="project">Creations</button><button class="chip" data-k="idea">Imagination</button><button class="chip" data-k="dream">Aspiration</button></div></nav>
 <div class="npg" id="npg"></div>
+<div class="lcp" id="lcp"></div>
 <div class="modal" id="modal"><div class="box">
   <h3 id="mt">Add new</h3>
       <input id="mn" placeholder="Name">
@@ -720,7 +733,7 @@ $('#dp').onclick=e=>{
 };
 $('#dout').onclick=()=>{if(confirm('Log out?')){closeDash();A.signOut(auth)}};
 $('#sign').onclick=()=>{if(!auth)return toast(fbDone?'Login needs Firebase':'Still loading… try again in a moment');user?openDash():openLogin()};
-function goHome(){sd1.flush();sd2.flush();if(nid&&cur&&D[cur])dropEmpty();nid=null;$('#npg').classList.remove('on');if($('#dp').classList.contains('on'))renderDash();cur=null;$('#detail').classList.add('hide');$('#home').classList.remove('hide');closeModal();home();scrollTo(0,0)}
+function goHome(){sd1.flush();sd2.flush();if(nid&&cur&&D[cur])dropEmpty();nid=null;$('#npg').classList.remove('on');$('#lcp').classList.remove('on');if($('#dp').classList.contains('on'))renderDash();cur=null;$('#detail').classList.add('hide');$('#home').classList.remove('hide');closeModal();home();scrollTo(0,0)}
 /* ====== Edit these placeholders ====== */
 const SITE={
   about:'Brainmate helps you keep your creations, imagination and aspirations in one place.\n\nReplace this text with your own story.',
@@ -735,7 +748,7 @@ $('#ct').onclick=()=>{$('#dd').classList.remove('on');location.href='mailto:'+SI
 $('#oa').onclick=()=>{$('#dd').classList.remove('on');window.open(SITE.otherApp,'_blank','noopener')};
 $('#brand').onclick=goHome;$('#hlogo').onclick=e=>{e.stopPropagation();$('#dd').classList.toggle('on')};
 document.addEventListener('click',e=>{if(!e.target.closest('#dd'))$('#dd').classList.remove('on');const m=$('#dm');if(m&&!e.target.closest('.dmw'))m.classList.remove('on')});
-addEventListener('keydown',e=>{if(e.key==='Escape'){if(nid)closeNote();closeRm();$('#dd').classList.remove('on');$('#am').classList.remove('on');closeLogin();closeDash()}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(nid)closeNote();if($('#lcp').classList.contains('on'))closeLC();closeRm();$('#dd').classList.remove('on');$('#am').classList.remove('on');closeLogin();closeDash()}});
 
 let seeded=false;try{seeded=!!localStorage.getItem('mw_seeded')}catch(e){}
 
@@ -803,7 +816,8 @@ function openDetail(id){
   el.querySelector('.tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;tab=b.dataset.tab;nid=null;el.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));renderTab()};
   bindTc();nMig();renderTab();
 }
-let nid=null;
+let nid=null,lcPrev='rough',lcF='';
+const LCT={list:'List',check:'Checklist'};
 const NK={rough:'roughNotes',full:'fullNotes'};
 const grow=t=>{if(!t||t.isContentEditable)return;t.style.height='auto';t.style.height=Math.max(t.scrollHeight,Math.round(innerHeight*.5))+'px'};
 const nUid=()=>'n'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -1076,13 +1090,34 @@ function dropEmpty(){
 function closeNote(){snapVer();sd2.flush();dropEmpty();nid=null;renderTab()}
 function renderTab(){
   const v=D[cur],tc=$('#tc');let h='';
+  if(!LCT[tab])lcPrev=tab;
   if(tab!=='rough'&&tab!=='full')nid=null;
   if(tab==='rough'||tab==='full')h=renderNotes(v,tab);
-  if(tab==='list')h=`<div class="panel"><h3>List</h3>${v.features.map((x,i)=>`<div class="ck"><span>${esc(x)}</span><button class="d" data-a="fdel" data-i="${i}">${ic('x',16)}</button></div>`).join('')||'<div class="mut">No items yet</div>'}<div class="row" style="margin-top:10px"><input id="fin" data-enter="fadd" placeholder="New item…"><button class="p" data-a="fadd">Add</button></div></div>`;
-  if(tab==='check')h=`<div class="panel"><h3>Checklist</h3>${v.checklist.map((x,i)=>`<div class="ck ${x.d?'done':''}"><input type="checkbox" data-a="ctog" data-i="${i}" ${x.d?'checked':''}><span>${esc(x.t)}</span><button class="d" data-a="cdel" data-i="${i}">${ic('x',16)}</button></div>`).join('')||'<div class="mut">No tasks yet</div>'}<div class="row" style="margin-top:10px"><input id="cin" data-enter="cadd" placeholder="New task…"><button class="p" data-a="cadd">Add</button></div></div>`;
   if(tab==='drive')h=`<div class="panel"><h3>Drive preview</h3><div class="row"><input id="din" data-enter="dset" placeholder="Google Drive folder link or ID" value="${esc(v.driveId?'https://drive.google.com/drive/folders/'+v.driveId:'')}"><button class="p" data-a="dset">Show</button></div><div class="mut" style="margin-top:6px">The folder must be shared as “Anyone with the link — Viewer”.</div>${v.driveId?`<iframe src="https://drive.google.com/embeddedfolderview?id=${v.driveId}#grid" loading="lazy"></iframe>`:''}</div>`;
-  tc.innerHTML=h;noteEd();
+  tc.innerHTML=h;noteEd();renderLC(v);
 }
+function renderLC(v){
+  const lp=$('#lcp');
+  if(!LCT[tab]){lp.classList.remove('on');lp.innerHTML='';return}
+  const old=lp.querySelector('.nb'),sc=old?old.scrollTop:0,kf=lcF;
+  const isL=tab==='list';
+  const rows=isL
+    ?v.features.map((x,i)=>`<div class="ck"><span>${esc(x)}</span><button class="d" data-a="fdel" data-i="${i}">${ic('x',16)}</button></div>`).join('')||'<div class="mut" style="text-align:center;padding:48px 0">No items yet</div>'
+    :v.checklist.map((x,i)=>`<div class="ck ${x.d?'done':''}"><input type="checkbox" data-a="ctog" data-i="${i}" ${x.d?'checked':''}><span>${esc(x.t)}</span><button class="d" data-a="cdel" data-i="${i}">${ic('x',16)}</button></div>`).join('')||'<div class="mut" style="text-align:center;padding:48px 0">No tasks yet</div>';
+  lp.innerHTML=`<div class="nt"><button data-a="lback" aria-label="Back" title="Back">${ic('back',22)}</button><div class="nttl">${LCT[tab]}</div><span class="lsp"></span></div><div class="nb">${rows}</div><div class="lcadd"><div class="row"><input id="${isL?'fin':'cin'}" data-enter="${isL?'fadd':'cadd'}" placeholder="${isL?'New item…':'New task…'}" autocomplete="off"><button class="p" data-a="${isL?'fadd':'cadd'}">Add</button></div></div>`;
+  lp.classList.add('on');
+  const nb=lp.querySelector('.nb');nb.scrollTop=kf?nb.scrollHeight:sc;
+  if(kf){const f=lp.querySelector('input[data-enter]');if(f)f.focus()}
+}
+function closeLC(){tab=lcPrev;document.querySelectorAll('#detail .tab').forEach(x=>x.classList.toggle('on',x.dataset.tab===tab));renderTab()}
+$('#lcp').onclick=e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const a=b.dataset.a;
+  if(a==='lback'){closeLC();return}
+  lcF=(a==='fadd'||a==='cadd')?'1':'';
+  $('#tc').onclick(e);lcF='';
+};
+$('#lcp').onkeydown=e=>{const k=e.target.dataset.enter;if(e.key==='Enter'&&k)$('#lcp').querySelector(`[data-a="${k}"]`).click()};
 const sd1=deb((id,p)=>save(id,p)),sd2=deb((id,p)=>save(id,p));
 $('#npg').onclick=e=>{
   const b=e.target.closest('[data-a]');if(!b){closeMenu();return}
@@ -1109,9 +1144,9 @@ $('#npg').addEventListener('load',()=>refitCv(),true);
 $('#npg').addEventListener('keydown',e=>{if(e.target.id==='ntt'&&e.key==='Enter'){e.preventDefault();$('#ntx')?.focus()}});
 const vv=window.visualViewport,isPhone=()=>matchMedia('(max-width:767px)').matches;
 function fitVV(){
-  const np=$('#npg');if(!np)return;
-  if(vv&&isPhone()){np.style.height=vv.height+'px';np.style.top=vv.offsetTop+'px';np.style.bottom='auto'}
-  else{np.style.height='';np.style.top='';np.style.bottom=''}
+  ['#npg','#lcp'].forEach(q=>{const np=$(q);if(!np)return;
+    if(vv&&isPhone()){np.style.height=vv.height+'px';np.style.top=vv.offsetTop+'px';np.style.bottom='auto'}
+    else{np.style.height='';np.style.top='';np.style.bottom=''}});
   closeMenu();
 }
 if(vv){vv.addEventListener('resize',fitVV);vv.addEventListener('scroll',fitVV)}
@@ -1183,6 +1218,7 @@ document.querySelectorAll('.bar .chip').forEach(c=>c.onclick=()=>{filter=c.datas
     {el:'#lp',open:()=>isOn('#lp'),close:closeLogin},
     {el:'#dp',open:()=>isOn('#dp'),close:closeDash},
     {el:'#npg',open:()=>isOn('#npg'),close:closeNote},
+    {el:'#lcp',open:()=>isOn('#lcp'),close:closeLC},
     {el:'#detail',open:()=>!$('#detail').classList.contains('hide'),close:goHome}
   ];
   let depth=0,ignore=0,seq=0,armed=false,at=null;
