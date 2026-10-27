@@ -336,6 +336,18 @@ button.d:hover{box-shadow:var(--press)}
 .lcadd .row{max-width:728px;margin:0 auto}
 html{background:var(--bg)}
 .top{padding-top:env(safe-area-inset-top,0px)}
+/* ====== smooth navigation ====== */
+html{-webkit-tap-highlight-color:transparent}
+body{overscroll-behavior-y:contain}
+button,.card,.ncard,.chip,.tab,.ck,.drow{touch-action:manipulation}
+button,.card,.ncard,.chip,.tab{transition:border-color .15s,background-color .15s,color .15s,opacity .15s}
+@keyframes pgFade{from{opacity:0}to{opacity:1}}
+@keyframes pgUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+#home:not(.hide),#detail:not(.hide){animation:pgFade .18s ease-out}
+.npg.on,.lcp.on{animation:pgUp .2s cubic-bezier(.2,.8,.2,1)}
+.modal.on .box{animation:pgUp .18s cubic-bezier(.2,.8,.2,1)}
+.npg,.lcp{will-change:transform,opacity}
+@media(prefers-reduced-motion:reduce){#home,#detail,.npg.on,.lcp.on,.modal.on .box{animation:none}}
 /* ====== Samsung-style notes list ====== */
 .nhd{margin-top:12px;padding:0 4px}
 .nh1{font-size:1.3rem;font-weight:700;line-height:1.2;letter-spacing:-.2px}
