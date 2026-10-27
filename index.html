@@ -367,6 +367,11 @@ html,body{background:var(--bg)}
 .card.empty .im.cn>div{visibility:hidden}
 .card.empty .im.cn .pl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 #secs .card.empty .im.cn{aspect-ratio:auto}
+/* When a row has a taller card (long name), keep every card's name centred in its name area */
+#secs .card{display:flex;flex-direction:column}
+#secs .card .im{flex:none}
+#secs .card .tx{flex:1;display:flex;align-items:center;justify-content:center}
+#secs .card .tx .nm{width:100%}
 @media(min-width:768px) and (max-width:1023px){
   #secs{padding:0 40px}
   #secs .tx{padding:7px 12px 9px}
