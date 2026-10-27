@@ -345,6 +345,10 @@ button,.card,.ncard,.chip,.tab{transition:border-color .15s,background-color .15
 html,body{background:var(--bg)}
 .tab{font-weight:600}.chip{font-weight:600}.nm{font-weight:700}.ncp,.tt{color:var(--ink)}.mut,.ncd,.stats small{font-weight:500}
 @media(min-width:768px){html{font-size:112.5%}}
+.card .im.cn{aspect-ratio:auto;display:block;padding:12px 14px 2px;background:transparent;font-size:.82rem;font-weight:400;line-height:1.55;color:var(--mut);text-align:center}
+.card .tx .nm{text-align:center}
+.cn .ch{font-size:.92rem;font-weight:600;color:var(--ink);padding-bottom:4px;margin-bottom:4px;border-bottom:1px solid var(--line)}
+.cd{font-size:.64rem;color:var(--mut);line-height:1.45;opacity:.6;font-weight:500}
 @keyframes pgFade{from{opacity:0}to{opacity:1}}
 @keyframes pgUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 #home:not(.hide),#detail:not(.hide){animation:pgFade .18s ease-out}
@@ -604,8 +608,12 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&bkT){clear
 const bn=n=>String(n);
 const LK='bm_local_v1',cloud=()=>!!(db&&user);
 const saveLocal=()=>{try{localStorage.setItem(LK,JSON.stringify(D))}catch(e){toast('Device storage is full')}};
-const save=(id,p)=>{if(authWait){toast('Loading your account…');return}Object.assign(D[id],p);if(cloud()){F.updateDoc(dref(id),p).catch(e=>fail('Save failed',e));bkSoon()}else saveLocal()};
+const save=(id,p)=>{if(authWait){toast('Loading your account…');return}if(!p.nm)p={...p,upd:Date.now()};Object.assign(D[id],p);if(cloud()){F.updateDoc(dref(id),p).catch(e=>fail('Save failed',e));bkSoon()}else saveLocal()};
 const blurText=v=>v.desc?esc(v.desc):'Add description';
+const nCnt=v=>{const a=x=>(x||[]).filter(n=>!n.tr).length;let r=a(v.roughNotes),f=a(v.fullNotes);if(!v.nm){if((v.rough||'').trim()&&!(v.roughNotes||[]).length)r=1;if((v.desc||'').trim()&&!(v.fullNotes||[]).length)f=1}return{r,f,t:r+f}};
+const lastEd=v=>{let m=Math.max(v.upd||0,v.ts||0);[...(v.roughNotes||[]),...(v.fullNotes||[])].forEach(n=>{m=Math.max(m,n.up||n.at||0)});return m};
+const hD=t=>t?new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+const hDT=t=>t?new Date(t).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}):'—';
 const cnt=v=>{const L=v.checklist,d=L.filter(x=>x.d).length;return{d,n:L.length,p:L.length?Math.round(d/L.length*100):0}};
 
 function nav(){
@@ -777,7 +785,7 @@ function home(){
   let h='';
   h+=Object.entries(TYPES).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
     const items=Object.entries(D).filter(([,v])=>v.type===k).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
-    let c=items.map(([id,v])=>{const s=cnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im${v.image?'':' ph'}">${v.image?`<img src="${v.image}" alt="" loading="lazy" decoding="async">`:`<div class="blur${v.desc?'':' empty'}">${blurText(v)}</div>`}</div><div class="tx"><div class="nm">${esc(v.name)}</div></div></div>`}).join('');
+    let c=items.map(([id,v])=>{const s=cnt(v),n=nCnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im cn"><div class="ch">Total note: ${n.t}</div><div>Rough note: ${n.r}</div><div>Full note: ${n.f}</div></div><div class="tx"><div class="nm">${esc(v.name)}</div></div></div>`}).join('');
     c+=`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im">${ic('plus',34)}</div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,4-items.length));
     return `<div class="sh" data-t="${k}"><h2>${t.l}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid">${c}</div>`;
   }).join('');
