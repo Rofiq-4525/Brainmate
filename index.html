@@ -348,6 +348,19 @@ html,body{background:var(--bg)}
 .card .im.cn{aspect-ratio:auto;display:block;padding:12px 14px 2px;background:transparent;font-size:.82rem;font-weight:400;line-height:1.55;color:var(--mut);text-align:center}
 .card .tx .nm{text-align:center}
 .cn .ch{font-size:.92rem;font-weight:600;color:var(--ink);padding-bottom:4px;margin-bottom:4px;border-bottom:1px solid var(--line)}
+/* Tablet + PC: compact cards, 4 per row */
+@media(min-width:768px){
+  #secs .grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  #secs .card{border-radius:12px}
+  #secs .card .im.cn{padding:8px 10px 0;font-size:.72rem;line-height:1.45}
+  #secs .cn .ch{font-size:.78rem;padding-bottom:3px;margin-bottom:3px}
+  #secs .tx{padding:8px 10px 10px}
+  #secs .nm{font-size:.82rem}
+  #secs .card.empty .im{aspect-ratio:16/6}
+  #secs .card.empty .im svg{width:22px;height:22px}
+  #secs .card.empty .nm{font-size:.8rem}
+  #secs .card.sk .im{aspect-ratio:16/7}
+}
 .cd{font-size:.64rem;color:var(--mut);line-height:1.45;opacity:.6;font-weight:500}
 @keyframes pgFade{from{opacity:0}to{opacity:1}}
 @keyframes pgUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -776,21 +789,24 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){if(nid)closeNote();if($('#lc
 
 let seeded=false;try{seeded=!!localStorage.getItem('mw_seeded')}catch(e){}
 
+const wideMQ=matchMedia('(min-width:768px)');
+const slots=()=>wideMQ.matches?8:4;
 function home(){
   document.querySelectorAll('.bar .chip').forEach(c=>c.classList.toggle('on',c.dataset.k===filter));
   if(loading&&!Object.keys(D).length){
-    $('#secs').innerHTML=Object.entries(TYPES).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>`<div class="sh" data-t="${k}"><h2>${t.l}</h2></div><div class="grid">${`<div class="card sk" data-t="${k}"><div class="im"></div><div class="tx"><div class="nm"></div></div></div>`.repeat(4)}</div>`).join('');
+    $('#secs').innerHTML=Object.entries(TYPES).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>`<div class="sh" data-t="${k}"><h2>${t.l}</h2></div><div class="grid">${`<div class="card sk" data-t="${k}"><div class="im"></div><div class="tx"><div class="nm"></div></div></div>`.repeat(slots())}</div>`).join('');
     return;
   }
   let h='';
   h+=Object.entries(TYPES).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
     const items=Object.entries(D).filter(([,v])=>v.type===k).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
     let c=items.map(([id,v])=>{const s=cnt(v),n=nCnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im cn"><div class="ch">Total note: ${n.t}</div><div>Rough note: ${n.r}</div><div>Full note: ${n.f}</div></div><div class="tx"><div class="nm">${esc(v.name)}</div></div></div>`}).join('');
-    c+=`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im">${ic('plus',34)}</div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,4-items.length));
+    c+=`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im">${ic('plus',34)}</div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,slots()-items.length));
     return `<div class="sh" data-t="${k}"><h2>${t.l}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid">${c}</div>`;
   }).join('');
   $('#secs').innerHTML=h;
 }
+wideMQ.addEventListener('change',()=>{if(!$('#home').classList.contains('hide'))home()});
 $('#secs').addEventListener('click',e=>{
   if(e.target.closest('[data-login]'))return openLogin();
   const f=e.target.closest('[data-f]');if(f){filter=f.dataset.f;return home()}
