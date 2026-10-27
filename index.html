@@ -403,6 +403,14 @@ html,body{background:var(--bg)}
   .bar .flw.a1 svg{animation-delay:.5s}
   @keyframes flwUp{0%{transform:translateY(7px);opacity:0}35%{opacity:.9}70%{opacity:.9}100%{transform:translateY(-7px);opacity:0}}
   @media(prefers-reduced-motion:reduce){.bar .flw svg{animation:none;opacity:.6}}
+  /* Bigger sidebar icons */
+  .bar .chip{font-size:.78rem;gap:6px}
+  .bar .chip>svg,.bar .chip .ico>svg:not(.ar){width:32px;height:32px}
+  .bar .chip .ico .ar{width:32px;height:32px}
+  .bar .chip .ico i{width:4px;height:4px}
+  .bar .chip .ico i:nth-of-type(1){left:9px}
+  .bar .chip .ico i:nth-of-type(2){left:15px}
+  .bar .chip .ico i:nth-of-type(3){left:21px}
   .toast{bottom:30px}
 }
 .cd{font-size:.64rem;color:var(--mut);line-height:1.45;opacity:.6;font-weight:500}
