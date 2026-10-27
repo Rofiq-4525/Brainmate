@@ -373,12 +373,37 @@ html,body{background:var(--bg)}
 #secs .card .tx{flex:1;display:flex;align-items:center;justify-content:center}
 #secs .card .tx .nm{width:100%}
 @media(min-width:768px) and (max-width:1023px){
-  #secs{padding:0 40px}
+  #secs{padding:0 12px}
   #secs .tx{padding:7px 12px 9px}
   #secs .nm{font-size:1rem;line-height:1.2;overflow-wrap:anywhere}
   #secs .card .im.cn{padding:12px 24px 6px;line-height:1.9;text-align:center}
   #secs .cn .ch{padding-bottom:6px;margin-bottom:6px}
   #secs .card.empty .nm{font-size:.95rem}
+}
+.flw{display:none}
+/* Tablet + PC: navigation menu on the left side instead of the bottom */
+@media(min-width:768px){
+  body{padding-bottom:40px}
+  .bar{left:0;right:auto;bottom:0;top:65px;width:96px;padding:0;display:block;border-top:none;border-right:1px solid var(--line);box-shadow:none;overflow-y:auto}
+  .bar{overflow:hidden}
+  .bar .chips{flex-direction:column;justify-content:stretch;align-items:stretch;gap:8px;width:100%;height:100%;padding:8px 6px;overflow:hidden}
+  .bar .chip{flex:1 1 0;width:100%;min-height:0;justify-content:center;padding:6px 2px;gap:4px;font-size:.7rem}
+  .top~.in{max-width:none;margin:0 0 0 96px;padding:0 max(20px,calc((100vw - 96px - 960px)/2))}
+  /* Flow: Imagination -> Aspiration -> Creations (bottom to top, arrows point up) */
+  .bar .chips{gap:2px}
+  .bar .chip[data-k=all]{order:0;margin-bottom:6px}
+  .bar .chip[data-k=project]{order:1}
+  .bar .flw.a1{order:2}
+  .bar .chip[data-k=dream]{order:3}
+  .bar .flw.a2{order:4}
+  .bar .chip[data-k=idea]{order:5}
+  .bar .flw{display:flex;flex:none;justify-content:center;align-items:center;height:26px;color:var(--ink);overflow:hidden}
+  .bar .flw svg{width:18px;height:18px;stroke-width:2.4;animation:flwUp 1.5s ease-in-out infinite}
+  .bar .flw.a2 svg{animation-delay:0s}
+  .bar .flw.a1 svg{animation-delay:.5s}
+  @keyframes flwUp{0%{transform:translateY(7px);opacity:0}35%{opacity:.9}70%{opacity:.9}100%{transform:translateY(-7px);opacity:0}}
+  @media(prefers-reduced-motion:reduce){.bar .flw svg{animation:none;opacity:.6}}
+  .toast{bottom:30px}
 }
 .cd{font-size:.64rem;color:var(--mut);line-height:1.45;opacity:.6;font-weight:500}
 @keyframes pgFade{from{opacity:0}to{opacity:1}}
@@ -409,7 +434,7 @@ html,body{background:var(--bg)}
   <div id="detail" class="hide"></div>
 </div>
 
-<nav class="bar"><div class="chips"><button class="chip on" data-k="all">All</button><button class="chip" data-k="project">Creations</button><button class="chip" data-k="idea">Imagination</button><button class="chip" data-k="dream">Aspiration</button></div></nav>
+<nav class="bar"><div class="chips"><button class="chip on" data-k="all">All</button><button class="chip" data-k="project">Creations</button><button class="chip" data-k="idea">Imagination</button><button class="chip" data-k="dream">Aspiration</button><span class="flw a1" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span><span class="flw a2" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div></nav>
 <div class="npg" id="npg"></div>
 <div class="lcp" id="lcp"></div>
 <div class="modal" id="modal"><div class="box">
