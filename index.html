@@ -66,8 +66,8 @@ button.d{color:var(--red)}
 .card.empty:hover{box-shadow:none}
 .card.empty .im{background:transparent;color:var(--mut);aspect-ratio:16/7}
 .card.empty .nm{color:var(--mut);font-weight:400;font-size:.95rem}
-#back,#dback,#lback{background:none;border:none;box-shadow:none;padding:6px 10px 6px 0;min-height:0;color:var(--mut);display:inline-flex;align-items:center}
-#back:hover,#dback:hover,#lback:hover,#back:active,#dback:active,#lback:active{background:none;box-shadow:none;color:var(--ink)}
+#back,#dback,#lback,#cpback{background:none;border:none;box-shadow:none;padding:6px 10px 6px 0;min-height:0;color:var(--mut);display:inline-flex;align-items:center}
+#back:hover,#dback:hover,#lback:hover,#cpback:hover,#back:active,#dback:active,#lback:active,#cpback:active{background:none;box-shadow:none;color:var(--ink)}
 .dmw{position:relative}
 .dtl{flex:1;min-width:0;text-align:center;font-weight:700;font-size:1.05rem;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px}
 .dd.dm{left:auto;right:0;min-width:0;width:max-content;top:calc(100% + 2px);padding:3px;border-radius:10px}
@@ -424,6 +424,17 @@ html,body{background:var(--bg)}
   .tb svg{width:24px;height:24px}
   .bar{top:77px}
 }
+/* Clipboard sync page */
+#cp .lbox{max-width:680px}
+#cp textarea{min-height:90px;width:100%}
+#cpbtns{display:flex;gap:8px;flex-wrap:wrap}
+#cplist{display:grid;gap:12px}
+.ck{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:8px;box-shadow:var(--raise)}
+.cktx{white-space:pre-wrap;overflow-wrap:anywhere;max-height:12em;overflow:auto;font-size:.95rem}
+.ckmt{color:var(--mut);font-size:.78rem}
+.ckf{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.ckb{display:flex;gap:6px}
+.ckb button,.ckb a{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:none;color:var(--ink);font-size:.82rem;text-decoration:none;cursor:pointer;min-height:0}
 .cd{font-size:.64rem;color:var(--mut);line-height:1.45;opacity:.6;font-weight:500}
 @keyframes pgFade{from{opacity:0}to{opacity:1}}
 @keyframes pgUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -446,7 +457,7 @@ html,body{background:var(--bg)}
 <base target="_blank">
 </head>
 <body>
-<div class="top"><div class="in"><button class="hl" id="hlogo" aria-label="Menu" title="Menu"></button><div class="brand" id="brand"><b>Brainmate</b></div><button id="sign" class="tb"></button><div class="dd" id="dd"><button id="ex"></button><button id="im"></button><input type="file" id="imf" accept=".json,application/json" class="hide"><button id="bk"></button><button id="inst" class="hide">Install app</button><div class="sep"></div><button id="ab"></button><button id="ct"></button><button id="oa"></button></div></div></div>
+<div class="top"><div class="in"><button class="hl" id="hlogo" aria-label="Menu" title="Menu"></button><div class="brand" id="brand"><b>Brainmate</b></div><button id="sign" class="tb"></button><div class="dd" id="dd"><button id="ex"></button><button id="im"></button><input type="file" id="imf" accept=".json,application/json" class="hide"><button id="bk"></button><button id="inst" class="hide">Install app</button><button id="cb"></button><div class="sep"></div><button id="ab"></button><button id="ct"></button><button id="oa"></button></div></div></div>
 
 <div class="in">
   <div id="home"><div id="secs"></div></div>
@@ -480,6 +491,17 @@ html,body{background:var(--bg)}
     <button class="drow" data-do="bk"></button>
   </div>
   <button class="d lbtn" id="dout"></button>
+</div></div>
+
+<div class="lpg" id="cp"><div class="lbox">
+  <div><button id="cpback"></button></div>
+  <div class="panel">
+    <h3>Clipboard</h3>
+    <div class="mut">Text saved to your account and synced across all your devices. Items stay until you delete them.</div>
+    <textarea id="cptx" placeholder="Type or paste text here"></textarea>
+    <div id="cpbtns"><button class="p" id="cpadd">Add text</button><button id="cppaste"></button></div>
+  </div>
+  <div id="cplist"></div>
 </div></div>
 
 <div class="lpg" id="lp"><div class="lbox">
@@ -578,7 +600,10 @@ const P={
  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8h.01"/>',
  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 6L2 7"/>',
- apps:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/>'
+ apps:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/>',
+clip:'<path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>',
+copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>'
 };
 const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${P[n]}</svg>`;
 const DF=()=>({checklist:[],features:[],notes:[],desc:'',rough:'',roughNotes:[],fullNotes:[],driveId:'',status:'In progress'});
@@ -846,6 +871,56 @@ $('#aclose').onclick=()=>$('#am').classList.remove('on');
 $('#am').onclick=e=>{if(e.target.id==='am')$('#am').classList.remove('on')};
 $('#ct').onclick=()=>{$('#dd').classList.remove('on');location.href='mailto:'+SITE.email};
 $('#oa').onclick=()=>{$('#dd').classList.remove('on');window.open(SITE.otherApp,'_blank','noopener')};
+/* ====== Clipboard sync (text only, Firestore) ====== */
+const clipCol=()=>F.collection(db,'users',user.uid,'clips'),clipDoc=id=>F.doc(db,'users',user.uid,'clips',id);
+let clipUnsub=null,clipItems=[];
+const clipId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function renderClips(){
+  const el=$('#cplist');
+  if(!clipItems.length){el.innerHTML='<div class="mut" style="text-align:center;padding:24px 0">Nothing here yet.</div>';return}
+  el.innerHTML=clipItems.map(c=>{
+    const when=new Date(c.at||Date.now()).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    return `<div class="ck"><div class="cktx">${esc(c.text)}</div><div class="ckf"><span class="ckmt">${when}</span><span class="ckb"><button data-ck="copy" data-id="${c.id}">${ic('copy',16)}<span>Copy</span></button><button data-ck="del" data-id="${c.id}" aria-label="Delete">${ic('trash',16)}</button></span></div></div>`;
+  }).join('');
+}
+function openClip(){
+  if(!user||!db){toast('Log in to use Clipboard');return}
+  $('#cp').classList.add('on');scrollTo(0,0);
+  if(clipUnsub)clipUnsub();
+  clipUnsub=F.onSnapshot(F.query(clipCol(),F.orderBy('at','desc')),s=>{clipItems=s.docs.map(d=>({id:d.id,...d.data()})).filter(c=>typeof c.text==='string');renderClips()},e=>fail('Clipboard sync failed',e));
+}
+function closeClip(){$('#cp').classList.remove('on');if(clipUnsub){clipUnsub();clipUnsub=null}}
+async function addClipText(t){
+  t=(t||'').trim();if(!t)return;
+  if(new Blob([t]).size>900000){toast('Text is too long (max about 900 KB)');return}
+  try{await F.setDoc(clipDoc(clipId()),{type:'text',text:t,at:Date.now()})}catch(e){fail('Could not save',e)}
+}
+async function delClip(id){try{await F.deleteDoc(clipDoc(id))}catch(e){fail('Delete failed',e)}}
+async function copyClip(id){
+  const c=clipItems.find(x=>x.id===id);if(!c)return;
+  try{await navigator.clipboard.writeText(c.text);toast('Copied')}catch(e){toast('Copy failed. Select the text and copy manually.')}
+}
+async function clipFromSystem(){
+  try{const t=await navigator.clipboard.readText();if(t)await addClipText(t);else toast('Clipboard is empty')}
+  catch(e){toast('Allow clipboard access, or paste into the box with Ctrl+V')}
+}
+$('#cb').innerHTML=ic('clip',18)+'<span>Clipboard</span>';
+$('#cpback').innerHTML=ic('back',22);$('#cpback').setAttribute('aria-label','Back');
+$('#cppaste').innerHTML=ic('copy',16)+' Paste';
+$('#cb').onclick=()=>{$('#dd').classList.remove('on');openClip()};
+$('#cpback').onclick=closeClip;
+$('#cpadd').onclick=async()=>{const t=$('#cptx').value;$('#cptx').value='';await addClipText(t)};
+$('#cptx').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();$('#cpadd').click()}});
+$('#cppaste').onclick=clipFromSystem;
+$('#cp').addEventListener('paste',async e=>{
+  if(e.target.id==='cptx')return;
+  const t=e.clipboardData?.getData('text/plain');if(t){e.preventDefault();await addClipText(t)}
+});
+$('#cplist').addEventListener('click',e=>{
+  const b=e.target.closest('[data-ck]');if(!b)return;
+  if(b.dataset.ck==='copy')copyClip(b.dataset.id);else if(b.dataset.ck==='del')delClip(b.dataset.id);
+});
+
 $('#brand').onclick=goHome;$('#hlogo').onclick=e=>{e.stopPropagation();$('#dd').classList.toggle('on')};
 document.addEventListener('click',e=>{if(!e.target.closest('#dd'))$('#dd').classList.remove('on');const m=$('#dm');if(m&&!e.target.closest('.dmw'))m.classList.remove('on')});
 addEventListener('keydown',e=>{if(e.key==='Escape'){if(nid)closeNote();if($('#lcp').classList.contains('on'))closeLC();closeRm();$('#dd').classList.remove('on');$('#am').classList.remove('on');closeLogin();closeDash()}});
