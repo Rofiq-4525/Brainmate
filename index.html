@@ -530,9 +530,10 @@ html,body{background:var(--bg)}
 #secs .card.bkc.bk-img img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;-webkit-user-drag:none}
 .sh h2 .scnt{font-weight:500;color:var(--mut);font-size:.82em;margin-left:6px}
 /* Writers-mate: collapsed older books */
-.bkmore{display:flex;align-items:center;justify-content:center;gap:5px;margin:8px auto 0;padding:4px 12px;border:none;background:none;box-shadow:none;border-radius:999px;font-size:.76rem;font-weight:500;color:var(--mut);opacity:.6;transition:opacity .2s ease,background-color .2s ease}
-.bkmore:hover,.bkmore:focus-visible{opacity:.9;background:var(--soft)}
-.bkmore svg{transition:transform .35s ease}
+.bkmore{display:flex;align-items:center;justify-content:center;gap:5px;margin:10px auto 0;padding:3px 12px;border:1px solid var(--line);background:var(--soft);box-shadow:none;border-radius:999px;font-size:.7rem;font-weight:500;color:var(--mut);transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.sh{scroll-margin-top:84px}
+.bkmore:hover,.bkmore:focus-visible{color:var(--ink);border-color:var(--lo)}
+.bkmore svg{width:12px;height:12px;transition:transform .35s ease}
 .bkmore.open svg{transform:rotate(180deg)}
 .bkx{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1)}
 .bkx.open{grid-template-rows:1fr}
@@ -1119,6 +1120,7 @@ $('#secs').addEventListener('click',e=>{
     mo.classList.toggle('open',on);
     const bx=document.querySelector('.bkx[data-x="'+k+'"]');if(bx)bx.classList.toggle('open',on);
     mo.querySelector('span').textContent=on?'Show less':n+' more book'+(n===1?'':'s');
+    if(!on){const sh=document.querySelector('.sh[data-t="'+k+'"]');if(sh)sh.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'})}
     return;
   }
   const n=e.target.closest('[data-new]');if(n)return openModal({type:n.dataset.new});
