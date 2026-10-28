@@ -523,6 +523,16 @@ html,body{background:var(--bg)}
 .bk-ob .pg{fill:hsl(var(--h) 85% 97%)}
 .bk-pl{display:flex;opacity:.35}
 #secs .card.bkc.sk{background:var(--soft);border-color:var(--line);box-shadow:none}
+.bar .flw.a3 svg{animation-delay:0s}
+/* Uploaded cover replaces the whole card */
+#secs .card.bkc.bk-img{padding:0;gap:0;border:none;overflow:hidden;background:var(--soft);box-shadow:7px 3px 10px -3px rgba(0,0,0,.34);transition:transform .18s ease,box-shadow .18s ease}
+#secs .card.bkc.bk-img:hover{transform:translateX(-2px);box-shadow:10px 4px 14px -3px rgba(0,0,0,.38)}
+#secs .card.bkc.bk-img img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;-webkit-user-drag:none}
+.sh h2 .scnt{font-weight:500;color:var(--mut);font-size:.82em;margin-left:6px}
+/* Writers-mate: collapsed older books */
+.bkmore{display:flex;align-items:center;justify-content:center;gap:6px;margin:12px auto 0;padding:7px 18px;border-radius:999px;font-size:.84rem;font-weight:600;color:var(--mut);background:var(--card);border:1px solid var(--line)}
+.bkmore svg{transition:transform .2s ease}
+.bkmore.open svg{transform:rotate(180deg)}
 /* Creating-book section: slightly bigger covers */
 .grid.bkg.bkbig{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:0 14px}
 @media(min-width:768px){#secs .grid.bkg.bkbig{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:0 24px}}
@@ -663,7 +673,7 @@ fbDone=true;
 const ROLES={
   brain:{name:'Brainmate',sub:'Your creating, aspiring and imagining ideas in one place.',ic:'brain',types:['project','dream','idea']},
   business:{name:'Business-mate',sub:'Your business creating, aspiring and imagining ideas in one place.',ic:'briefcase',types:['bproject','bdream','bidea']},
-  writers:{name:'Writers-mate',sub:'Your books, upcoming books and imagination in one place.',ic:'pen',types:['wproject','wdream','widea']},
+  writers:{name:'Writers-mate',sub:'Your books, upcoming books and imagination in one place.',ic:'pen',types:['wdone','wproject','wdream','widea']},
   dev:{name:'Developers-mate',sub:'Your running, upcoming and imagining projects in one place.',ic:'code',types:['dproject','ddream','didea']},
   learning:{name:'Learning-mate',sub:'Your running, upcoming and pending topics in one place.',ic:'bulb',types:['lrun','lup','lpend']},
   study:{name:'Study-mate',sub:'Your running, upcoming and pending notes in one place.',ic:'cap',types:['srun','sup','spend']},
@@ -676,6 +686,7 @@ const TYPES={
   bproject:{l:'Creating-business',s:'Creating',kind:'project',role:'business'},
   bdream:{l:'Aspiring-business idea',s:'Aspiring',kind:'dream',role:'business'},
   bidea:{l:'Imagining-business idea',s:'Imagining',kind:'idea',role:'business'},
+  wdone:{l:'Completed book',s:'Completed',kind:'done',role:'writers'},
   wproject:{l:'Creating-book',s:'Creating',kind:'project',role:'writers'},
   wdream:{l:'Upcoming book',s:'Upcoming',kind:'dream',role:'writers'},
   widea:{l:'Imagining book idea',s:'Imagining',kind:'idea',role:'writers'},
@@ -1062,27 +1073,29 @@ let seeded=false;try{seeded=!!localStorage.getItem('mw_seeded')}catch(e){}
 
 const tabMQ=matchMedia('(min-width:768px)'),pcMQ=matchMedia('(min-width:1024px)');
 const slots=()=>pcMQ.matches?8:tabMQ.matches?6:4;
-const wslots=k=>k==='wproject'?(pcMQ.matches?5:tabMQ.matches?4:2):(pcMQ.matches?6:tabMQ.matches?5:3);
+const bkOpen={},BIGK=k=>k==='wproject'||k==='wdone';
+const wslots=k=>BIGK(k)?(pcMQ.matches?5:tabMQ.matches?4:2):(pcMQ.matches?6:tabMQ.matches?5:3);
 const hueOf=s=>{let h=7;for(const c of String(s||'')){h=(h*31+c.charCodeAt(0))>>>0}return h%360};
 const BKOB='<svg class="bk-ob" viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="pg" d="M32 11C27 7 18 6 6 7v31c12-1 21 0 26 4z"/><path class="pg" d="M32 11c5-4 14-5 26-4v31c-12-1-21 0-26 4z"/><path d="M32 11v31"/><path d="M11 15c5 0 10 .6 16 2.6M11 21c5 0 10 .6 16 2.6M11 27c5 0 10 .6 16 2.6M53 15c-5 0-10 .6-16 2.6M53 21c-5 0-10 .6-16 2.6M53 27c-5 0-10 .6-16 2.6" stroke-width="1.5" opacity=".6"/><path d="M6 41.5c12-1 21 0 26 4 5-4 14-5 26-4" stroke-width="1.5" opacity=".5"/></svg>';
 const bookImg=u=>/^data:image\//.test(u||'')?u:'';
 const isBn=s=>/[\u0980-\u09FF]/.test(s||'');
 const bkFs=n=>{const l=[...String(n||'')].length;return l<=12?.92:l<=22?.83:l<=34?.75:.68};
-const bookCard=(id,v,k)=>`<div class="card bkc bk-f" data-id="${id}" data-t="${k}" style="--h:${hueOf(v.name)}"><div class="bk-top"><div class="bk-t${isBn(v.name)?' bn':''}" style="--fs:${bkFs(v.name)}rem">${esc(v.name)}</div>${v.cat?`<div class="bk-c">${esc(v.cat)}</div>`:''}</div><div class="bk-ic">${bookImg(v.img)?`<img src="${bookImg(v.img)}" alt="">`:BKOB}</div>${v.author?`<div class="bk-a${isBn(v.author)?' bn':''}"><span>${esc(v.author)}</span></div>`:''}</div>`;
+const bookCard=(id,v,k)=>bookImg(v.img)?`<div class="card bkc bk-img" data-id="${id}" data-t="${k}" title="${esc(v.name)}"><img src="${bookImg(v.img)}" alt="${esc(v.name)}" draggable="false"></div>`:`<div class="card bkc bk-f" data-id="${id}" data-t="${k}" style="--h:${hueOf(v.name)}"><div class="bk-top"><div class="bk-t${isBn(v.name)?' bn':''}" style="--fs:${bkFs(v.name)}rem">${esc(v.name)}</div>${v.cat?`<div class="bk-c">${esc(v.cat)}</div>`:''}</div><div class="bk-ic">${bookImg(v.img)?`<img src="${bookImg(v.img)}" alt="">`:BKOB}</div>${v.author?`<div class="bk-a${isBn(v.author)?' bn':''}"><span>${esc(v.author)}</span></div>`:''}</div>`;
 const bookEmpty=k=>`<div class="card empty bkc" data-new="${k}" data-t="${k}"><span class="bk-pl">${ic('plus',24)}</span><div class="nm">Add new</div></div>`;
 function home(){
   document.querySelectorAll('.bar .chip').forEach(c=>c.classList.toggle('on',c.dataset.k===filter));
   if(loading&&!Object.keys(D).length){
-    $('#secs').innerHTML=RT().map(k=>[k,TYPES[k]]).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>`<div class="sh" data-t="${k}"><h2>${t.l}</h2></div><div class="grid${role==='writers'?' bkg'+(k==='wproject'?' bkbig':''):''}">${`<div class="card sk${role==='writers'?' bkc':''}" data-t="${k}"><div class="im"></div><div class="tx"><div class="nm"></div></div></div>`.repeat(slots())}</div>`).join('');
+    $('#secs').innerHTML=RT().map(k=>[k,TYPES[k]]).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>`<div class="sh" data-t="${k}"><h2>${t.l}</h2></div><div class="grid${role==='writers'?' bkg'+(BIGK(k)?' bkbig':''):''}">${`<div class="card sk${role==='writers'?' bkc':''}" data-t="${k}"><div class="im"></div><div class="tx"><div class="nm"></div></div></div>`.repeat(slots())}</div>`).join('');
     return;
   }
   let h='';
   h+=RT().map(k=>[k,TYPES[k]]).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
     const items=Object.entries(D).filter(([,v])=>v.type===k).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
     const W=TYPES[k].role==='writers';
-    let c=items.map(([id,v])=>{if(W)return bookCard(id,v,k);const s=cnt(v),n=nCnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im cn"><div class="ch">Total note: ${n.t}</div><div>Rough note: ${n.r}</div><div>Full note: ${n.f}</div></div><div class="tx"><div class="nm">${esc(v.name)}</div>${MOVER[TYPES[k].role]?RT().filter(x=>x!==k).map(x=>`<button class="mv" data-mv="${id}" data-to="${x}">→ ${TYPES[x].s}</button>`).join(''):''}</div></div>`}).join('');
-    c+=W?bookEmpty(k).repeat(Math.max(0,wslots(k)-items.length)):`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im cn"><div class="ch">Total note: 0</div><div>Rough note: 0</div><div>Full note: 0</div><span class="pl">${ic('plus',34)}</span></div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,slots()-items.length));
-    return `<div class="sh" data-t="${k}"><h2>${t.l}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid${W?' bkg'+(k==='wproject'?' bkbig':''):''}">${c}</div>`;
+    const lim=BIGK(k)?2:2*wslots(k),more=W&&items.length>lim,shown=more&&!bkOpen[k]?items.slice(-lim):items;
+    let c=shown.map(([id,v])=>{if(W)return bookCard(id,v,k);const s=cnt(v),n=nCnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im cn"><div class="ch">Total note: ${n.t}</div><div>Rough note: ${n.r}</div><div>Full note: ${n.f}</div></div><div class="tx"><div class="nm">${esc(v.name)}</div>${MOVER[TYPES[k].role]?RT().filter(x=>x!==k).map(x=>`<button class="mv" data-mv="${id}" data-to="${x}">→ ${TYPES[x].s}</button>`).join(''):''}</div></div>`}).join('');
+    c+=W?(more?'':bookEmpty(k).repeat(Math.max(0,wslots(k)-items.length))):`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im cn"><div class="ch">Total note: 0</div><div>Rough note: 0</div><div>Full note: 0</div><span class="pl">${ic('plus',34)}</span></div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,slots()-items.length));
+    return `<div class="sh" data-t="${k}"><h2>${t.l}${W?`<span class="scnt">(${items.length})</span>`:''}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid${W?' bkg'+(BIGK(k)?' bkbig':''):''}">${c}</div>${more?`<button class="bkmore${bkOpen[k]?' open':''}" data-more="${k}"><span>${bkOpen[k]?'Show less':(items.length-lim)+' more book'+(items.length-lim===1?'':'s')}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>`:''}`;
   }).join('');
   $('#secs').innerHTML=h;
 }
@@ -1092,6 +1105,7 @@ $('#secs').addEventListener('click',e=>{
   const f=e.target.closest('[data-f]');if(f){filter=f.dataset.f;return home()}
   const mv=e.target.closest('[data-mv]');if(mv){e.stopPropagation();return moveItem(mv.dataset.mv,mv.dataset.to)}
   const x=e.target.closest('[data-del]');if(x){e.stopPropagation();return delItem(x.dataset.del)}
+  const mo=e.target.closest('[data-more]');if(mo){bkOpen[mo.dataset.more]=!bkOpen[mo.dataset.more];return home()}
   const n=e.target.closest('[data-new]');if(n)return openModal({type:n.dataset.new});
   const c=e.target.closest('[data-id]');if(c)openDetail(c.dataset.id);
 });
@@ -1587,14 +1601,15 @@ const KI={
   dream:()=>'<span class="ico">'+ic('target',20)+'<svg class="ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L12 12M12 12h5M12 12V7"/></svg></span>',
   run:()=>ic('play',20),
   up:()=>ic('upc',20),
-  pend:()=>ic('clock',20)
+  pend:()=>ic('clock',20),
+  done:()=>ic('check',20)
 };
 const FLW=(c,o)=>'<span class="flw '+c+'" style="--o:'+o+'" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>';
 function buildBar(){
-  const ts=RT(),three=ts.length===3,ord=three?[1,3,5]:[1,3];
+  const ts=RT(),ord=ts.map((_,i)=>2*i+1);
   let h='<button class="chip'+(filter==='all'?' on':'')+'" data-k="all" style="--o:0">'+ic('home',20)+'All</button>';
   ts.forEach((k,i)=>{h+='<button class="chip'+(filter===k?' on':'')+'" data-k="'+k+'" style="--o:'+ord[i]+'">'+KI[TYPES[k].kind]()+esc(TYPES[k].s)+'</button>'});
-  h+=FLW('a1',2)+(three?FLW('a2',4):'');
+  for(let i=1;i<ts.length;i++)h+=FLW('a'+i,2*i);
   $('#barc').innerHTML=h;
 }
 function renderRS(){
