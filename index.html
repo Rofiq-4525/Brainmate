@@ -19,8 +19,8 @@
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js">
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js">
 <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Tiro+Bangla&family=Hind+Siliguri:wght@600&family=Cormorant+Garamond:ital,wght@1,600&family=Fraunces:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Tiro+Bangla&family=Hind+Siliguri:wght@600&family=Cormorant+Garamond:ital,wght@1,600&family=Fraunces:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{color-scheme:light;--bg:#fdfcf8;--card:#fffffe;--ink:#1c1a17;--mut:#575045;--g:#1c1a17;--onG:#1c1a17;--soft:#fdfcf8;--line:#e4e0d3;--red:#3d3a34}
 *{box-sizing:border-box;margin:0}
@@ -215,6 +215,7 @@ body{padding-bottom:90px}
 .modal{background:#fdfcf8c7;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .box{box-shadow:var(--raise)}
 .toast{background:var(--card);color:var(--ink);box-shadow:var(--raise)}
+[data-t]{--fx:var(--fx-project)}
 [data-t=project]{--fx:var(--fx-project)}
 [data-t=idea]{--fx:var(--fx-project)}
 [data-t=dream]{--fx:var(--fx-project)}
@@ -477,23 +478,73 @@ html,body{background:var(--bg)}
 .ncard{break-inside:avoid;margin-bottom:12px;min-height:0;border-radius:22px;padding:16px;gap:6px;box-shadow:var(--fx-project)}
 .ncard .ncp{flex:none;-webkit-line-clamp:7}
 .ncard .ncd{padding-top:6px}
+/* ====== Roles ====== */
+:root[data-role=writers]{--bg:#faf3e6;--soft:#faf3e6;--line:#e8d9bd;--lo:#e2d2b3;--hi:#fffdf7}
+:root[data-role=business]{--bg:#f1f3f5;--soft:#f1f3f5;--line:#d9dee3;--lo:#cdd3da;--hi:#fbfcfd}
+:root[data-role=study]{--bg:#f2f7f0;--soft:#f2f7f0;--line:#d8e4d3;--lo:#cbdac5;--hi:#fbfefa}
+:root[data-role=learning]{--bg:#eff5fa;--soft:#eff5fa;--line:#d5e2ee;--lo:#c8d8e6;--hi:#fafdff}
+:root[data-role=dev]{--bg:#f3f1fa;--soft:#f3f1fa;--line:#dcd8ee;--lo:#d0cbe6;--hi:#fcfbff}
+:root[data-role=readers]{--bg:#faf0f1;--soft:#faf0f1;--line:#ecd6d9;--lo:#e2c9cd;--hi:#fffafb}
+.rsl{font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);padding:8px 12px 4px}
+#rs{display:flex;flex-direction:column}
+.dd .rsb.on{font-weight:700;background:var(--soft)}
+.rsb .rck{margin-left:auto;display:inline-flex}
+.mv{margin-top:8px;margin-right:6px;font-size:.78rem;padding:3px 10px;border-radius:8px;color:var(--mut)}
+@media(min-width:768px){.bar .chip,.bar .flw{order:var(--o,0)}}
+#brand{position:relative;user-select:none;-webkit-user-select:none}
+.bcar{flex:none;color:var(--mut);transition:transform .22s ease}
+#brand.open .bcar{transform:rotate(180deg)}
+#rdd.dd{display:flex;position:fixed;right:auto;z-index:60;width:240px;min-width:0;cursor:default;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px) scale(.97);transform-origin:var(--nx,50%) 0;transition:opacity .2s ease,transform .22s cubic-bezier(.2,.8,.2,1),visibility 0s linear .22s}
+#rdd.dd::before{content:'';position:absolute;top:-7px;left:var(--nx,50%);width:12px;height:12px;background:var(--card);border-left:1px solid var(--line);border-top:1px solid var(--line);transform:translateX(-50%) rotate(45deg);border-radius:3px 0 0 0}
+#rdd.dd.on{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition-delay:0s}
+@media(prefers-reduced-motion:reduce){#rdd.dd,.bcar{transition:none}}
+/* ====== Writers-mate: book covers ====== */
+.grid.bkg{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(min-width:768px){#secs .grid.bkg{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}}
+@media(min-width:1024px){#secs .grid.bkg{grid-template-columns:repeat(5,minmax(0,1fr))}}
+#secs .card.bkc{aspect-ratio:2/3;border-radius:12px;display:flex;flex-direction:column}
+#secs .card.bkc.bk-f{justify-content:space-between;gap:8px;padding:14px 12px 12px;border:1px solid hsl(var(--h) 45% 78%);border-top:4px solid #c9a24a;border-left:5px solid #c9a24a;
+  background:linear-gradient(165deg,hsl(var(--h) 80% 94%),hsl(var(--h) 62% 84%));color:hsl(var(--h) 45% 16%);
+  box-shadow:inset 6px 0 7px -5px rgba(0,0,0,.16),7px 3px 10px -3px rgba(0,0,0,.34);transition:transform .18s ease,box-shadow .18s ease}
+#secs .card.bkc.bk-f:hover{transform:translateX(-2px);box-shadow:inset 6px 0 7px -5px rgba(0,0,0,.16),10px 4px 14px -3px rgba(0,0,0,.38)}
+.bk-top{display:flex;flex-direction:column;align-items:center;gap:7px}
+.bk-t{font-size:var(--fs,1rem);font-family:'Playfair Display','Tiro Bangla',Georgia,serif;font-weight:700;line-height:1.3;letter-spacing:.01em;text-align:center;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 0 hsl(var(--h) 90% 98%/.75),0 0 10px hsl(var(--h) 90% 96%/.6)}
+.bk-t.bn{font-family:'Tiro Bangla','Hind Siliguri',serif;font-weight:400;letter-spacing:0;line-height:1.35;font-size:calc(var(--fs,1rem)*1.08)}
+.bk-c{background:#fff;border:1px solid hsl(var(--h) 40% 72%);border-radius:999px;padding:2px 12px;font-size:.72rem;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bk-ic{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;opacity:.85}
+.bk-ic img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.bk-a{text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:600;font-size:.98rem;line-height:1.25;letter-spacing:.03em;border-top:1px solid hsl(var(--h) 30% 55%/.45);padding-top:8px;color:hsl(var(--h) 35% 20%)}
+.bk-a.bn{font-family:'Hind Siliguri',sans-serif;font-style:normal;font-weight:600;font-size:.82rem;letter-spacing:0}
+.bk-a.bn{font-style:normal}
+.bk-a span{overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#secs .card.bkc.empty{justify-content:center;align-items:center;gap:8px;background:transparent;border:1.5px dashed var(--line);box-shadow:none}
+#secs .card.bkc.empty .nm{flex:none;width:auto;color:var(--mut);font-weight:400;font-size:.85rem}
+.bk-ic svg.bk-ob{width:min(80%,130px);height:auto;max-height:100%;filter:drop-shadow(0 2px 3px hsl(var(--h) 40% 30%/.25))}
+.bk-ob .pg{fill:hsl(var(--h) 85% 97%)}
+.bk-pl{display:flex;opacity:.35}
+#secs .card.bkc.sk{background:var(--soft);border-color:var(--line);box-shadow:none}
+.dau{display:block;font-size:.72rem;font-weight:500;color:var(--mut);font-family:inherit}
 </style>
 <base target="_blank">
 </head>
 <body>
-<div class="top"><div class="in"><button class="hl" id="hlogo" aria-label="Menu" title="Menu"></button><div class="brand" id="brand"><b>Brainmate</b></div><button id="sign" class="tb"></button><div class="dd" id="dd"><button id="ex"></button><button id="im"></button><input type="file" id="imf" accept=".json,application/json" class="hide"><button id="bk"></button><button id="inst" class="hide">Install app</button><button id="cb"></button><div class="sep"></div><button id="ab"></button><button id="ct"></button><button id="oa"></button></div></div></div>
+<div class="top"><div class="in"><button class="hl" id="hlogo" aria-label="Menu" title="Menu"></button><div class="brand" id="brand" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false"><b>Brainmate</b><svg class="bcar" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg><div class="dd" id="rdd" role="menu"><div class="rsl">Switch role</div><div id="rs"></div></div></div><button id="sign" class="tb"></button><div class="dd" id="dd"><button id="ex"></button><button id="im"></button><input type="file" id="imf" accept=".json,application/json" class="hide"><button id="bk"></button><button id="inst" class="hide">Install app</button><button id="cb"></button><div class="sep"></div><button id="ab"></button><button id="ct"></button><button id="oa"></button></div></div></div>
 
 <div class="in">
   <div id="home"><div id="secs"></div></div>
   <div id="detail" class="hide"></div>
 </div>
 
-<nav class="bar"><div class="chips"><button class="chip on" data-k="all">All</button><button class="chip" data-k="project">Creations</button><button class="chip" data-k="idea">Imagination</button><button class="chip" data-k="dream">Aspiration</button><span class="flw a1" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span><span class="flw a2" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div></nav>
+<nav class="bar"><div class="chips" id="barc"></div></nav>
 <div class="npg" id="npg"></div>
 <div class="lcp" id="lcp"></div>
 <div class="modal" id="modal"><div class="box">
   <h3 id="mt">Add new</h3>
       <input id="mn" placeholder="Name">
+  <input id="ma" placeholder="Author name" style="display:none">
+  <input id="mc" placeholder="Category (optional)" style="display:none">
+  <div id="mimw" class="row" style="display:none;align-items:center;gap:10px"><button type="button" id="mimb">Cover image</button><img id="mimp" alt="" style="display:none;height:52px;width:auto;border-radius:6px;border:1px solid var(--line)"><button type="button" id="mimx" style="display:none">Remove</button></div>
+  <input type="file" id="mimf" accept="image/*" hidden>
   <textarea id="ms" placeholder="Description" style="min-height:90px"></textarea>
   <div class="row"><button class="p" id="msave" style="flex:1;justify-content:center">Save</button><button id="mcancel">Cancel</button></div>
 </div></div>
@@ -597,7 +648,41 @@ if(!firebaseConfig.apiKey.startsWith("YOUR")){
 fbDone=true;
 })();
 
-const TYPES={project:{l:'Creations',n:'Creations',i:'folder'},dream:{l:'Aspiration',n:'Aspiration',i:'moon'},idea:{l:'Imagination',n:'Imagination',i:'bulb'}};
+/* ====== Roles: each role has its own sections; items are separated by their type ====== */
+const ROLES={
+  brain:{name:'Brainmate',sub:'Your creating, aspiring and imagining ideas in one place.',ic:'brain',types:['project','dream','idea']},
+  business:{name:'Business-mate',sub:'Your business creating, aspiring and imagining ideas in one place.',ic:'briefcase',types:['bproject','bdream','bidea']},
+  writers:{name:'Writers-mate',sub:'Your books, upcoming books and imagination in one place.',ic:'pen',types:['wproject','wdream','widea']},
+  dev:{name:'Developers-mate',sub:'Your running, upcoming and imagining projects in one place.',ic:'code',types:['dproject','ddream','didea']},
+  learning:{name:'Learning-mate',sub:'Your running, upcoming and pending topics in one place.',ic:'bulb',types:['lrun','lup','lpend']},
+  study:{name:'Study-mate',sub:'Your running, upcoming and pending notes in one place.',ic:'cap',types:['srun','sup','spend']},
+  readers:{name:'Readers-mate',sub:'Your running and pending books in one place.',ic:'book',types:['rrun','rpend']}
+};
+const TYPES={
+  project:{l:'Creating',s:'Creating',kind:'project',role:'brain'},
+  dream:{l:'Aspiring',s:'Aspiring',kind:'dream',role:'brain'},
+  idea:{l:'Imagining',s:'Imagining',kind:'idea',role:'brain'},
+  bproject:{l:'Creating-business',s:'Creating',kind:'project',role:'business'},
+  bdream:{l:'Aspiring-business idea',s:'Aspiring',kind:'dream',role:'business'},
+  bidea:{l:'Imagining-business idea',s:'Imagining',kind:'idea',role:'business'},
+  wproject:{l:'Creating-book',s:'Creating',kind:'project',role:'writers'},
+  wdream:{l:'Upcoming book',s:'Upcoming',kind:'dream',role:'writers'},
+  widea:{l:'Imagining book idea',s:'Imagining',kind:'idea',role:'writers'},
+  dproject:{l:'Running project',s:'Running',kind:'project',role:'dev'},
+  ddream:{l:'Upcoming project',s:'Upcoming',kind:'dream',role:'dev'},
+  didea:{l:'Imagining project idea',s:'Imagining',kind:'idea',role:'dev'},
+  lrun:{l:'Running topic',s:'Running',kind:'run',role:'learning'},
+  lup:{l:'Upcoming topic',s:'Upcoming',kind:'up',role:'learning'},
+  lpend:{l:'Pending topic',s:'Pending',kind:'pend',role:'learning'},
+  srun:{l:'Running notes',s:'Running',kind:'run',role:'study'},
+  sup:{l:'Upcoming notes',s:'Upcoming',kind:'up',role:'study'},
+  spend:{l:'Pending notes',s:'Pending',kind:'pend',role:'study'},
+  rrun:{l:'Running book',s:'Running',kind:'run',role:'readers'},
+  rpend:{l:'Pending book',s:'Pending',kind:'pend',role:'readers'}
+};
+const MOVER={study:1,learning:1,readers:1};
+let role=(()=>{try{const r=localStorage.getItem('bm_role');return ROLES[r]?r:'brain'}catch(e){return 'brain'}})();
+const RT=()=>ROLES[role].types;
 const TABS=[['rough','Rough note'],['full','Full note'],['list','List'],['check','Checklist'],['drive','Drive preview']];
 const P={
  home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
@@ -625,6 +710,9 @@ const P={
  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8h.01"/>',
  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 6L2 7"/>',
  apps:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/>',
+code:'<path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/>',
+upc:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+play:'<path d="M6 4l14 8-14 8z"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',check:'<path d="M20 6L9 17l-5-5"/>',book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',pen:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',briefcase:'<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',cap:'<path d="M22 10L12 5 2 10l10 5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/>',
 clip:'<path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>',
 copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
 file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>'
@@ -869,7 +957,8 @@ function renderDash(){
   let d=0,n=0;L.forEach(v=>{const s=cnt(v);d+=s.d;n+=s.n});
   $('#dprof').innerHTML=`<div class="lg">${user.photoURL?`<img src="${esc(user.photoURL)}" alt="">`:ic('user',30)}</div><div style="min-width:0"><b>${esc(user.displayName||'Brainmate user')}</b><small>${esc(user.email||'')}</small></div>`;
   bkStatus();
-  $('#dstats').innerHTML=`<div><small>Creations</small><b>${by('project')}</b></div><div><small>Imagination</small><b>${by('idea')}</b></div><div><small>Aspiration</small><b>${by('dream')}</b></div>`;
+  $('#dstats').style.gridTemplateColumns='repeat('+RT().length+',1fr)';
+  $('#dstats').innerHTML=RT().map(k=>`<div><small>${TYPES[k].l}</small><b>${by(k)}</b></div>`).join('');
 }
 const openDash=()=>{renderDash();$('#dp').classList.add('on');scrollTo(0,0)};
 const closeDash=()=>$('#dp').classList.remove('on');
@@ -945,26 +1034,44 @@ $('#cplist').addEventListener('click',e=>{
   if(b.dataset.ck==='copy')copyClip(b.dataset.id);else if(b.dataset.ck==='del')delClip(b.dataset.id);
 });
 
-$('#brand').onclick=goHome;$('#hlogo').onclick=e=>{e.stopPropagation();$('#dd').classList.toggle('on')};
-document.addEventListener('click',e=>{if(!e.target.closest('#dd'))$('#dd').classList.remove('on');const m=$('#dm');if(m&&!e.target.closest('.dmw'))m.classList.remove('on')});
-addEventListener('keydown',e=>{if(e.key==='Escape'){if(nid)closeNote();if($('#lcp').classList.contains('on'))closeLC();closeRm();$('#dd').classList.remove('on');$('#am').classList.remove('on');closeLogin();closeDash()}});
+const rdd=$('#rdd');document.body.appendChild(rdd);
+const posRdd=()=>{const b=$('#brand').getBoundingClientRect(),h=$('.top').getBoundingClientRect(),w=rdd.offsetWidth||240,cx=b.left+b.width/2;
+  const l=Math.max(10,Math.min(cx-w/2,innerWidth-w-10));
+  rdd.style.left=l+'px';rdd.style.top=(h.bottom+9)+'px';rdd.style.setProperty('--nx',Math.max(18,Math.min(cx-l,w-18))+'px')};
+const setRdd=on=>{if(on)posRdd();rdd.classList.toggle('on',on);$('#brand').classList.toggle('open',on);$('#brand').setAttribute('aria-expanded',on)};
+addEventListener('resize',()=>{if(rdd.classList.contains('on'))posRdd()});
+$('#brand').onclick=e=>{e.stopPropagation();$('#dd').classList.remove('on');setRdd(!rdd.classList.contains('on'))};
+$('#brand').onkeydown=e=>{if(e.target===e.currentTarget&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.currentTarget.click()}};
+rdd.onclick=e=>e.stopPropagation();
+$('#hlogo').onclick=e=>{e.stopPropagation();setRdd(false);$('#dd').classList.toggle('on')};
+document.addEventListener('click',e=>{setRdd(false);if(!e.target.closest('#dd'))$('#dd').classList.remove('on');const m=$('#dm');if(m&&!e.target.closest('.dmw'))m.classList.remove('on')});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(nid)closeNote();if($('#lcp').classList.contains('on'))closeLC();closeRm();setRdd(false);$('#dd').classList.remove('on');$('#am').classList.remove('on');closeLogin();closeDash()}});
 
 let seeded=false;try{seeded=!!localStorage.getItem('mw_seeded')}catch(e){}
 
 const tabMQ=matchMedia('(min-width:768px)'),pcMQ=matchMedia('(min-width:1024px)');
 const slots=()=>pcMQ.matches?8:tabMQ.matches?6:4;
+const wslots=()=>pcMQ.matches?5:tabMQ.matches?4:2;
+const hueOf=s=>{let h=7;for(const c of String(s||'')){h=(h*31+c.charCodeAt(0))>>>0}return h%360};
+const BKOB='<svg class="bk-ob" viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="pg" d="M32 11C27 7 18 6 6 7v31c12-1 21 0 26 4z"/><path class="pg" d="M32 11c5-4 14-5 26-4v31c-12-1-21 0-26 4z"/><path d="M32 11v31"/><path d="M11 15c5 0 10 .6 16 2.6M11 21c5 0 10 .6 16 2.6M11 27c5 0 10 .6 16 2.6M53 15c-5 0-10 .6-16 2.6M53 21c-5 0-10 .6-16 2.6M53 27c-5 0-10 .6-16 2.6" stroke-width="1.5" opacity=".6"/><path d="M6 41.5c12-1 21 0 26 4 5-4 14-5 26-4" stroke-width="1.5" opacity=".5"/></svg>';
+const bookImg=u=>/^data:image\//.test(u||'')?u:'';
+const isBn=s=>/[\u0980-\u09FF]/.test(s||'');
+const bkFs=n=>{const l=[...String(n||'')].length;return l<=12?.92:l<=22?.83:l<=34?.75:.68};
+const bookCard=(id,v,k)=>`<div class="card bkc bk-f" data-id="${id}" data-t="${k}" style="--h:${hueOf(v.name)}"><div class="bk-top"><div class="bk-t${isBn(v.name)?' bn':''}" style="--fs:${bkFs(v.name)}rem">${esc(v.name)}</div>${v.cat?`<div class="bk-c">${esc(v.cat)}</div>`:''}</div><div class="bk-ic">${bookImg(v.img)?`<img src="${bookImg(v.img)}" alt="">`:BKOB}</div>${v.author?`<div class="bk-a${isBn(v.author)?' bn':''}"><span>${esc(v.author)}</span></div>`:''}</div>`;
+const bookEmpty=k=>`<div class="card empty bkc" data-new="${k}" data-t="${k}"><span class="bk-pl">${ic('plus',30)}</span><div class="nm">Add new</div></div>`;
 function home(){
   document.querySelectorAll('.bar .chip').forEach(c=>c.classList.toggle('on',c.dataset.k===filter));
   if(loading&&!Object.keys(D).length){
-    $('#secs').innerHTML=Object.entries(TYPES).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>`<div class="sh" data-t="${k}"><h2>${t.l}</h2></div><div class="grid">${`<div class="card sk" data-t="${k}"><div class="im"></div><div class="tx"><div class="nm"></div></div></div>`.repeat(slots())}</div>`).join('');
+    $('#secs').innerHTML=RT().map(k=>[k,TYPES[k]]).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>`<div class="sh" data-t="${k}"><h2>${t.l}</h2></div><div class="grid${role==='writers'?' bkg':''}">${`<div class="card sk${role==='writers'?' bkc':''}" data-t="${k}"><div class="im"></div><div class="tx"><div class="nm"></div></div></div>`.repeat(slots())}</div>`).join('');
     return;
   }
   let h='';
-  h+=Object.entries(TYPES).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
+  h+=RT().map(k=>[k,TYPES[k]]).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
     const items=Object.entries(D).filter(([,v])=>v.type===k).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
-    let c=items.map(([id,v])=>{const s=cnt(v),n=nCnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im cn"><div class="ch">Total note: ${n.t}</div><div>Rough note: ${n.r}</div><div>Full note: ${n.f}</div></div><div class="tx"><div class="nm">${esc(v.name)}</div></div></div>`}).join('');
-    c+=`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im cn"><div class="ch">Total note: 0</div><div>Rough note: 0</div><div>Full note: 0</div><span class="pl">${ic('plus',34)}</span></div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,slots()-items.length));
-    return `<div class="sh" data-t="${k}"><h2>${t.l}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid">${c}</div>`;
+    const W=TYPES[k].role==='writers';
+    let c=items.map(([id,v])=>{if(W)return bookCard(id,v,k);const s=cnt(v),n=nCnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im cn"><div class="ch">Total note: ${n.t}</div><div>Rough note: ${n.r}</div><div>Full note: ${n.f}</div></div><div class="tx"><div class="nm">${esc(v.name)}</div>${MOVER[TYPES[k].role]?RT().filter(x=>x!==k).map(x=>`<button class="mv" data-mv="${id}" data-to="${x}">→ ${TYPES[x].s}</button>`).join(''):''}</div></div>`}).join('');
+    c+=W?bookEmpty(k).repeat(Math.max(0,wslots()-items.length)):`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im cn"><div class="ch">Total note: 0</div><div>Rough note: 0</div><div>Full note: 0</div><span class="pl">${ic('plus',34)}</span></div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,slots()-items.length));
+    return `<div class="sh" data-t="${k}"><h2>${t.l}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid${W?' bkg':''}">${c}</div>`;
   }).join('');
   $('#secs').innerHTML=h;
 }
@@ -972,10 +1079,16 @@ function home(){
 $('#secs').addEventListener('click',e=>{
   if(e.target.closest('[data-login]'))return openLogin();
   const f=e.target.closest('[data-f]');if(f){filter=f.dataset.f;return home()}
+  const mv=e.target.closest('[data-mv]');if(mv){e.stopPropagation();return moveItem(mv.dataset.mv,mv.dataset.to)}
   const x=e.target.closest('[data-del]');if(x){e.stopPropagation();return delItem(x.dataset.del)}
   const n=e.target.closest('[data-new]');if(n)return openModal({type:n.dataset.new});
   const c=e.target.closest('[data-id]');if(c)openDetail(c.dataset.id);
 });
+function moveItem(id,to){
+  if(authWait)return toast('Loading your account…');
+  const v=D[id];if(!v||!TYPES[to]||!MOVER[TYPES[v.type].role]||TYPES[to].role!==TYPES[v.type].role)return;
+  save(id,{type:to});home();
+}
 function delItem(id){
   if(authWait)return toast('Loading your account…');
   if(!confirm('Delete this permanently?'))return;
@@ -985,18 +1098,27 @@ function delItem(id){
 
 function openModal(m){
   mode=m;const v=m.id?D[m.id]:{};
+  const wr=TYPES[m.id?v.type:m.type].role==='writers';
+  $('#ma').style.display=wr?'':'none';$('#ma').value=v.author||'';$('#mc').style.display=wr?'':'none';$('#mc').value=v.cat||'';$('#mimw').style.display=wr?'flex':'none';setMimg(wr?bookImg(v.img):'');$('#mn').placeholder=wr?'Book name':'Name';
   $('#mn').value=v.name||'';$('#ms').value=v.desc||'';
   $('#mt').textContent=m.id?'Edit':'New — '+TYPES[m.type].l;$('#modal').classList.add('on');
 }
+let mimg='';
+function setMimg(u){mimg=u||'';const im=$('#mimp');im.src=mimg;im.style.display=mimg?'':'none';$('#mimx').style.display=mimg?'':'none';$('#mimb').textContent=mimg?'Change image':'Cover image'}
+const smallImg=(f,max=420)=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(i.width*k));c.height=Math.max(1,Math.round(i.height*k));c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(i.src);let u=f.type==='image/png'?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.85);if(u.length>400000)u=c.toDataURL('image/jpeg',.7);r(u)};i.onerror=()=>r('');i.src=URL.createObjectURL(f)});
+$('#mimb').onclick=()=>$('#mimf').click();
+$('#mimx').onclick=()=>setMimg('');
+$('#mimf').onchange=async()=>{const f=$('#mimf').files[0];$('#mimf').value='';if(!f)return;const u=await smallImg(f);if(!u||u.length>700000)return toast('Could not use that image');setMimg(u)};
 function closeModal(){$('#modal').classList.remove('on')}
 $('#mcancel').onclick=closeModal;
 $('#msave').onclick=async()=>{
   if(authWait)return toast('Loading your account…');
   const name=$('#mn').value.trim(),desc=$('#ms').value.trim();
   if(!name)return $('#mn').focus();
-  if(mode.id){save(mode.id,{name,desc});closeModal();openDetail(mode.id)}
+  const wr=TYPES[mode.id?D[mode.id].type:mode.type].role==='writers',ex=wr?{author:$('#ma').value.trim(),cat:$('#mc').value.trim(),img:mimg}:{};
+  if(mode.id){save(mode.id,{name,desc,...ex});closeModal();openDetail(mode.id)}
   else{
-    const data={...DF(),type:mode.type,name,desc,ts:Date.now()};
+    const data={...DF(),type:mode.type,name,desc,...ex,ts:Date.now()};
     if(cloud()){try{const r=await F.addDoc(col(),{...data,created:F.serverTimestamp()});D[r.id]=data;bkSoon()}catch(e){return fail('Could not create',e)}}
     else{D['l'+Date.now()]=data;saveLocal()}
     closeModal();home();
@@ -1007,7 +1129,7 @@ function openDetail(id){
   cur=id;tab='rough';nid=null;const v=D[id],t=TYPES[v.type];
   $('#home').classList.add('hide');const el=$('#detail');el.classList.remove('hide');el.dataset.t=v.type;
   el.innerHTML=`
-  <div class="row dtop" style="margin-top:14px;justify-content:space-between"><button id="back" aria-label="Back" title="Back">${ic('back',22)}</button><div class="dtl">${esc(v.name)}</div><div class="dmw"><button id="dots" aria-label="More options" title="More" aria-haspopup="true">${ic('dots',22)}</button><div class="dd dm" id="dm"><button id="edit">${ic('edit',16)} Edit</button><button class="d" id="del">${ic('trash',16)} Delete</button></div></div></div>
+  <div class="row dtop" style="margin-top:14px;justify-content:space-between"><button id="back" aria-label="Back" title="Back">${ic('back',22)}</button><div class="dtl">${esc(v.name)}${v.author?`<small class="dau">by ${esc(v.author)}</small>`:''}</div><div class="dmw"><button id="dots" aria-label="More options" title="More" aria-haspopup="true">${ic('dots',22)}</button><div class="dd dm" id="dm"><button id="edit">${ic('edit',16)} Edit</button><button class="d" id="del">${ic('trash',16)} Delete</button></div></div></div>
   <div class="tabs">${TABS.map(([k,l])=>`<button class="tab ${k===tab?'on':''}" data-tab="${k}">${l}</button>`).join('')}</div>
   <div id="tc"></div>`;
   scrollTo(0,0);
@@ -1446,13 +1568,50 @@ function listen(){
     if(!cur)home();
   },e=>{loading=false;fail('Could not load your data',e);home()});
 }
-{const I={all:'home',project:'blocks',idea:'brain',dream:'target'};document.querySelectorAll('.bar .chip').forEach(c=>c.insertAdjacentHTML('afterbegin',c.dataset.k==='idea'?'<span class="ico">'+ic(I.idea,20)+'<i></i><i></i><i></i></span>':c.dataset.k==='dream'?'<span class="ico">'+ic(I.dream,20)+'<svg class="ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L12 12M12 12h5M12 12V7"/></svg></span>':c.dataset.k==='project'?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 21V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H3"/><rect class="bk" width="7" height="7" x="14" y="3" rx="1"/></svg>':ic(I[c.dataset.k],20)))}
-document.querySelectorAll('.bar .chip').forEach(c=>c.onclick=()=>{filter=c.dataset.k;goHome()});
+/* ====== Roles: sidebar/bottom bar, brand, switcher ====== */
+const SVG0='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+const KI={
+  project:()=>SVG0+'<path d="M10 21V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H3"/><rect class="bk" width="7" height="7" x="14" y="3" rx="1"/></svg>',
+  idea:()=>'<span class="ico">'+ic('brain',20)+'<i></i><i></i><i></i></span>',
+  dream:()=>'<span class="ico">'+ic('target',20)+'<svg class="ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L12 12M12 12h5M12 12V7"/></svg></span>',
+  run:()=>ic('play',20),
+  up:()=>ic('upc',20),
+  pend:()=>ic('clock',20)
+};
+const FLW=(c,o)=>'<span class="flw '+c+'" style="--o:'+o+'" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>';
+function buildBar(){
+  const ts=RT(),three=ts.length===3,ord=three?[1,3,5]:[1,3];
+  let h='<button class="chip'+(filter==='all'?' on':'')+'" data-k="all" style="--o:0">'+ic('home',20)+'All</button>';
+  ts.forEach((k,i)=>{h+='<button class="chip'+(filter===k?' on':'')+'" data-k="'+k+'" style="--o:'+ord[i]+'">'+KI[TYPES[k].kind]()+esc(TYPES[k].s)+'</button>'});
+  h+=FLW('a1',2)+(three?FLW('a2',4):'');
+  $('#barc').innerHTML=h;
+}
+function renderRS(){
+  $('#rs').innerHTML=Object.entries(ROLES).map(([k,r])=>'<button class="rsb'+(k===role?' on':'')+'" data-role="'+k+'">'+ic(r.ic,18)+'<span>'+esc(r.name)+'</span>'+(k===role?'<span class="rck">'+ic('check',16)+'</span>':'')+'</button>').join('');
+}
+function applyRole(){
+  const r=ROLES[role];
+  document.documentElement.dataset.role=role;
+  document.title=r.name;
+  $('#brand b').textContent=r.name;
+  const lt=$('.lt'),ls=$('.ls');if(lt)lt.textContent=r.name;if(ls)ls.textContent=r.sub;
+  buildBar();renderRS();
+}
+function setRole(k){
+  $('#dd').classList.remove('on');setRdd(false);
+  if(!ROLES[k]||k===role)return;
+  role=k;try{localStorage.setItem('bm_role',k)}catch(e){}
+  filter='all';applyRole();goHome();
+}
+$('#rs').onclick=e=>{const b=e.target.closest('[data-role]');if(b)setRole(b.dataset.role)};
+$('#barc').onclick=e=>{const c=e.target.closest('.chip');if(c){filter=c.dataset.k;goHome()}};
+applyRole();
 /* ====== Mobile back button: close the top layer first; at home press back twice to exit ====== */
 (()=>{
   try{history.replaceState({bm:'root'},'');history.pushState({bm:'home'},'')}catch(e){return}
   const isOn=id=>$(id).classList.contains('on');
   const L=[
+    {el:'#rdd',open:()=>isOn('#rdd'),close:()=>setRdd(false)},
     {el:'#dd',open:()=>isOn('#dd'),close:()=>$('#dd').classList.remove('on')},
     {el:'#rm',open:()=>isOn('#rm'),close:closeRm},
     {el:'#am',open:()=>isOn('#am'),close:()=>$('#am').classList.remove('on')},
