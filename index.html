@@ -530,9 +530,17 @@ html,body{background:var(--bg)}
 #secs .card.bkc.bk-img img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;-webkit-user-drag:none}
 .sh h2 .scnt{font-weight:500;color:var(--mut);font-size:.82em;margin-left:6px}
 /* Writers-mate: collapsed older books */
-.bkmore{display:flex;align-items:center;justify-content:center;gap:6px;margin:12px auto 0;padding:7px 18px;border-radius:999px;font-size:.84rem;font-weight:600;color:var(--mut);background:var(--card);border:1px solid var(--line)}
-.bkmore svg{transition:transform .2s ease}
+.bkmore{display:flex;align-items:center;justify-content:center;gap:5px;margin:8px auto 0;padding:4px 12px;border:none;background:none;box-shadow:none;border-radius:999px;font-size:.76rem;font-weight:500;color:var(--mut);opacity:.6;transition:opacity .2s ease,background-color .2s ease}
+.bkmore:hover,.bkmore:focus-visible{opacity:.9;background:var(--soft)}
+.bkmore svg{transition:transform .35s ease}
 .bkmore.open svg{transform:rotate(180deg)}
+.bkx{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1)}
+.bkx.open{grid-template-rows:1fr}
+.bkxi{overflow:hidden;min-height:0}
+.bkxi>.grid{opacity:0;transform:translateY(-6px);transition:opacity .3s ease,transform .4s cubic-bezier(.4,0,.2,1)}
+.bkx.open .bkxi>.grid{opacity:1;transform:none}
+.bkx:not(.open) .bkxi{visibility:hidden;transition:visibility 0s .4s}
+@media(prefers-reduced-motion:reduce){.bkx,.bkxi>.grid,.bkmore svg{transition:none}}
 /* Creating-book section: slightly bigger covers */
 .grid.bkg.bkbig{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:0 14px}
 @media(min-width:768px){#secs .grid.bkg.bkbig{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:0 24px}}
@@ -1092,10 +1100,10 @@ function home(){
   h+=RT().map(k=>[k,TYPES[k]]).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
     const items=Object.entries(D).filter(([,v])=>v.type===k).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
     const W=TYPES[k].role==='writers';
-    const lim=BIGK(k)?2:2*wslots(k),more=W&&items.length>lim,shown=more&&!bkOpen[k]?items.slice(-lim):items;
+    const lim=BIGK(k)?2:2*wslots(k),more=W&&items.length>lim,shown=more?items.slice(-lim):items,older=more?items.slice(0,-lim):[];
     let c=shown.map(([id,v])=>{if(W)return bookCard(id,v,k);const s=cnt(v),n=nCnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im cn"><div class="ch">Total note: ${n.t}</div><div>Rough note: ${n.r}</div><div>Full note: ${n.f}</div></div><div class="tx"><div class="nm">${esc(v.name)}</div>${MOVER[TYPES[k].role]?RT().filter(x=>x!==k).map(x=>`<button class="mv" data-mv="${id}" data-to="${x}">→ ${TYPES[x].s}</button>`).join(''):''}</div></div>`}).join('');
     c+=W?(more?'':bookEmpty(k).repeat(Math.max(0,wslots(k)-items.length))):`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im cn"><div class="ch">Total note: 0</div><div>Rough note: 0</div><div>Full note: 0</div><span class="pl">${ic('plus',34)}</span></div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,slots()-items.length));
-    return `<div class="sh" data-t="${k}"><h2>${t.l}${W?`<span class="scnt">(${items.length})</span>`:''}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid${W?' bkg'+(BIGK(k)?' bkbig':''):''}">${c}</div>${more?`<button class="bkmore${bkOpen[k]?' open':''}" data-more="${k}"><span>${bkOpen[k]?'Show less':(items.length-lim)+' more book'+(items.length-lim===1?'':'s')}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>`:''}`;
+    return `<div class="sh" data-t="${k}"><h2>${t.l}${W?`<span class="scnt">(${items.length})</span>`:''}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid${W?' bkg'+(BIGK(k)?' bkbig':''):''}">${c}</div>${more?`<div class="bkx${bkOpen[k]?' open':''}" data-x="${k}"><div class="bkxi"><div class="grid bkg${BIGK(k)?' bkbig':''}" style="margin-top:14px">${older.map(([id,v])=>bookCard(id,v,k)).join('')}</div></div></div><button class="bkmore${bkOpen[k]?' open':''}" data-more="${k}" data-n="${older.length}"><span>${bkOpen[k]?'Show less':older.length+' more book'+(older.length===1?'':'s')}</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>`:''}`;
   }).join('');
   $('#secs').innerHTML=h;
 }
@@ -1105,7 +1113,14 @@ $('#secs').addEventListener('click',e=>{
   const f=e.target.closest('[data-f]');if(f){filter=f.dataset.f;return home()}
   const mv=e.target.closest('[data-mv]');if(mv){e.stopPropagation();return moveItem(mv.dataset.mv,mv.dataset.to)}
   const x=e.target.closest('[data-del]');if(x){e.stopPropagation();return delItem(x.dataset.del)}
-  const mo=e.target.closest('[data-more]');if(mo){bkOpen[mo.dataset.more]=!bkOpen[mo.dataset.more];return home()}
+  const mo=e.target.closest('[data-more]');
+  if(mo){
+    const k=mo.dataset.more,n=+mo.dataset.n,on=bkOpen[k]=!bkOpen[k];
+    mo.classList.toggle('open',on);
+    const bx=document.querySelector('.bkx[data-x="'+k+'"]');if(bx)bx.classList.toggle('open',on);
+    mo.querySelector('span').textContent=on?'Show less':n+' more book'+(n===1?'':'s');
+    return;
+  }
   const n=e.target.closest('[data-new]');if(n)return openModal({type:n.dataset.new});
   const c=e.target.closest('[data-id]');if(c)openDetail(c.dataset.id);
 });
