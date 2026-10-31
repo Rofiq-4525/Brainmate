@@ -498,6 +498,12 @@ html,body{background:var(--bg)}
 #rdd.dd::before{content:'';position:absolute;top:-7px;left:var(--nx,50%);width:12px;height:12px;background:var(--card);border-left:1px solid var(--line);border-top:1px solid var(--line);transform:translateX(-50%) rotate(45deg);border-radius:3px 0 0 0}
 #rdd.dd.on{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition-delay:0s}
 @media(prefers-reduced-motion:reduce){#rdd.dd,.bcar{transition:none}}
+/* ====== Writers-mate: Concept | Part of book | Full book ====== */
+.wtw{position:relative}
+.wtw .tab svg{width:12px;height:12px;margin-left:4px;flex:none;transition:transform .15s}
+.wtw.open .tab[data-ws=part] svg{transform:rotate(180deg)}
+.dd.ptm{left:50%;right:auto;top:calc(100% + 4px);transform:translateX(-50%);min-width:200px;width:max-content;max-width:92vw}
+.ptm button.on{font-weight:600;background:var(--soft)}
 /* ====== Writers-mate: book covers ====== */
 .grid.bkg{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media(min-width:768px){#secs .grid.bkg{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}}
@@ -709,9 +715,9 @@ const MOVER={study:1,learning:1,readers:1};
 let role=(()=>{try{const r=localStorage.getItem('bm_role');return ROLES[r]?r:'brain'}catch(e){return 'brain'}})();
 const RT=()=>ROLES[role].types;
 const TABS=[['rough','Rough note'],['full','Full note'],['list','List'],['check','Checklist'],['drive','Drive preview']];
-const WTABS=[['intro','ভূমিকা'],['toc','সূচিপত্র'],['chap','Chapter'],['back','Back matter'],['check','Checklist'],['drive','Drive preview']];
-const PG={intro:'ভূমিকা'};
-const NH={rough:'Rough notes',full:'Full notes',toc:'সূচিপত্র',chap:'Chapters',back:'Back matter'};
+const WTABS=[['intro','Introduction'],['toc','Index (Toc)'],['chap','Chapter'],['back','Back matter']];
+const PG={intro:'Introduction'};
+const NH={rough:'Rough notes',full:'Full notes',toc:'Index (Toc)',chap:'Chapters',back:'Back matter'};
 const isW=()=>!!(cur&&D[cur]&&TYPES[D[cur].type]&&TYPES[D[cur].type].role==='writers');
 const tabsFor=()=>isW()?WTABS:TABS;
 const P={
@@ -1156,12 +1162,12 @@ $('#msave').onclick=async()=>{
 };
 
 function openDetail(id){
-  cur=id;nid=null;const v=D[id],t=TYPES[v.type];tab=isW()?'intro':'rough';['tocNotes','chapNotes','backNotes'].forEach(f=>{if(!Array.isArray(v[f]))v[f]=[]});
+  cur=id;nid=null;const v=D[id],t=TYPES[v.type];tab=isW()?'intro':'rough';wsec='concept';['tocNotes','chapNotes','backNotes'].forEach(f=>{if(!Array.isArray(v[f]))v[f]=[]});
   $('#home').classList.add('hide');const el=$('#detail');el.classList.remove('hide');el.dataset.t=v.type;
   el.innerHTML=`
   <div class="row dtop" style="margin-top:14px;justify-content:space-between"><button id="back" aria-label="Back" title="Back">${ic('back',22)}</button><div class="dtl">${esc(v.name)}${v.author?`<small class="dau">by ${esc(v.author)}</small>`:''}</div><div class="dmw"><button id="dots" aria-label="More options" title="More" aria-haspopup="true">${ic('dots',22)}</button><div class="dd dm" id="dm"><button id="edit">${ic('edit',16)} Edit</button><button class="d" id="del">${ic('trash',16)} Delete</button></div></div></div>
-  ${isW()?cptHtml():''}
-  <div class="tabs">${tabsFor().map(([k,l])=>`<button class="tab ${k===tab?'on':''}" data-tab="${k}">${l}</button>`).join('')}</div>
+  ${isW()?wBar():`<div class="tabs">${tabsFor().map(([k,l])=>`<button class="tab ${k===tab?'on':''}" data-tab="${k}">${l}</button>`).join('')}</div>`}
+  <div id="cpw">${isW()?cptHtml():''}</div>
   <div id="tc"></div>
   <div id="bkw"></div>`;
   scrollTo(0,0);
@@ -1169,11 +1175,24 @@ function openDetail(id){
   $('#dots').onclick=e=>{e.stopPropagation();$('#dm').classList.toggle('on')};
   $('#edit').onclick=()=>{$('#dm').classList.remove('on');openModal({id})};
   $('#del').onclick=()=>{$('#dm').classList.remove('on');delItem(id)};
-  el.querySelector('.tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;sdp.flush();tab=b.dataset.tab;nid=null;lid=null;el.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));renderTab()};
+  const tbs=el.querySelector('.tabs');if(tbs)tbs.onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;sdp.flush();tab=b.dataset.tab;nid=null;lid=null;el.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));renderTab()};
   el.oninput=e=>{const t=e.target;if(t.id==='cpx'){cpGrow(t);D[cur].concept=t.value;sdp(cur,{concept:t.value})}};
-  el.onclick=e=>{if(e.target.closest('[data-a=bprint]'))printBook()};
+  el.onclick=e=>{
+    if(e.target.closest('[data-a=bprint]')){printBook();return}
+    const pm=$('#ptm'),wt=$('#detail .wtw');
+    const ws=e.target.closest('[data-ws]');
+    if(ws){
+      const k=ws.dataset.ws;
+      if(k==='part'){if(wsec!=='part')setWs('part');const o=pm.classList.toggle('on');wt.classList.toggle('open',o)}
+      else{pm.classList.remove('on');wt.classList.remove('open');if(wsec!==k)setWs(k)}
+      return;
+    }
+    const pt=e.target.closest('[data-pt]');
+    if(pt){sdp.flush();tab=pt.dataset.pt;nid=null;lid=null;pm.classList.remove('on');wt.classList.remove('open');setWs('part');return}
+    if(pm&&!e.target.closest('#ptm')){pm.classList.remove('on');wt&&wt.classList.remove('open')}
+  };
   {const c=$('#cpx');if(c){c.value=v.concept||'';cpGrow(c)}}
-  bindTc();nMig();lMig();renderTab();
+  bindTc();nMig();lMig();if(isW())setWs('concept');else renderTab();
 }
 let nid=null,lcPrev='rough',lcF='',lid=null,lx=null,lxF=false;
 const LCT={list:'List',check:'Checklist'};
@@ -1221,7 +1240,7 @@ function renderNotes(v,k){
 const bkSecs=v=>{
   const nl=f=>[...(v[f]||[])].filter(n=>!n.tr&&!n.ar&&!n.lk&&((n.t||'').trim()||(n.x||'').trim())).sort((a,b)=>(a.at||0)-(b.at||0)).map(n=>({t:n.t||'',h:nHtml(n)}));
   const pg=x=>(x||'').trim()?[{t:'',h:esc(x).replace(/\n/g,'<br>')}]:[];
-  return[['ভূমিকা',pg(v.intro)],['সূচিপত্র',nl('tocNotes')],['Chapters',nl('chapNotes')],['Back matter',nl('backNotes')]].filter(x=>x[1].length);
+  return[['Introduction',pg(v.intro)],['Index (Toc)',nl('tocNotes')],['Chapters',nl('chapNotes')],['Back matter',nl('backNotes')]].filter(x=>x[1].length);
 };
 const bkDoc=v=>{
   const S=bkSecs(v);
@@ -1230,7 +1249,7 @@ const bkDoc=v=>{
 };
 function renderBook(v){
   const d=bkDoc(v);
-  return `<div class="nhd" style="margin-top:34px"><div class="nh1">Book</div></div>${d?`<div class="row" style="margin-top:10px"><button class="p" data-a="bprint">Print / Save as PDF</button></div>${d}`:'<div class="mut" style="text-align:center;padding:48px 0">Nothing to compose yet. Write in ভূমিকা, সূচিপত্র, Chapter or Back matter.</div>'}`;
+  return `<div style="margin-top:14px"></div>${d?`<div class="row" style="margin-top:10px"><button class="p" data-a="bprint">Print / Save as PDF</button></div>${d}`:'<div class="mut" style="text-align:center;padding:48px 0">Nothing to compose yet. Write in Introduction, Index (Toc), Chapter or Back matter.</div>'}`;
 }
 function printBook(){
   const v=D[cur];if(!v)return;
@@ -1238,9 +1257,21 @@ function printBook(){
   fr.onload=()=>{toast('Choose “Save as PDF” in the print window');fr.contentWindow.focus();fr.contentWindow.print();setTimeout(()=>fr.remove(),60000)};
   fr.srcdoc=`<!doctype html><meta charset="utf-8"><title>${esc(v.name)}</title><style>body{font:16px/1.85 Georgia,'Tiro Bangla',serif;max-width:720px;margin:24px auto;padding:0 16px}img{max-width:100%}h2{text-align:center;page-break-before:always;margin-top:0}.bkcov{text-align:center;padding:120px 0}.bkct{font-size:34px;font-weight:700}.bkca{margin-top:12px;font-style:italic}.bkcov+h2{page-break-before:always}</style>${bkDoc(v)}`;
 }
-const cptHtml=()=>`<div class="cptw"><div class="cpth">Concept</div><textarea id="cpx" rows="2" placeholder="Write the concept of this book…" autocomplete="off"></textarea></div>`;
+const cptHtml=()=>`<div class="cptw"><textarea id="cpx" rows="2" placeholder="Write the concept of this book…" autocomplete="off"></textarea></div>`;
+let wsec='concept';
+const wBar=()=>`<div class="wtw"><div class="tabs"><button class="tab${wsec==='concept'?' on':''}" data-ws="concept">Concept note</button><button class="tab${wsec==='part'?' on':''}" data-ws="part">Part of book<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button><button class="tab${wsec==='full'?' on':''}" data-ws="full">Full book</button></div><div class="dd ptm" id="ptm">${WTABS.map(([k,l])=>`<button data-pt="${k}"${k===tab?' class="on"':''}>${l}</button>`).join('')}</div></div>`;
+function setWs(k){
+  wsec=k;
+  document.querySelectorAll('#detail .wtw .tab').forEach(b=>b.classList.toggle('on',b.dataset.ws===k));
+  document.querySelectorAll('#ptm button').forEach(b=>b.classList.toggle('on',b.dataset.pt===tab));
+  const cw=$('#cpw'),tc=$('#tc');
+  if(cw)cw.style.display=k==='concept'?'':'none';
+  if(tc)tc.style.display=k==='part'?'':'none';
+  if(k==='part')renderTab();else bkBox();
+  if(k==='concept'){const c=$('#cpx');if(c)cpGrow(c)}
+}
 const cpGrow=t=>{t.style.height='auto';t.style.height=Math.max(t.scrollHeight,60)+'px'};
-const bkBox=()=>{const w=$('#bkw');if(!w||!cur||!D[cur])return;w.innerHTML=isW()?renderBook(D[cur]):''};
+const bkBox=()=>{const w=$('#bkw');if(!w||!cur||!D[cur])return;w.innerHTML=isW()&&wsec==='full'?renderBook(D[cur]):''};
 const bkUp=deb(()=>bkBox(),500);
 function renderPage(v,k){
   return `<div class="nhd"><div class="nh1">${PG[k]}</div></div><div class="ne"><textarea id="pgx" data-f="${k}" placeholder="Write here…" autocomplete="off"></textarea></div>`;
