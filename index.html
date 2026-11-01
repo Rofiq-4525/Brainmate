@@ -1282,7 +1282,7 @@ function cbBox(){
   w.innerHTML=`<div class="panel" style="margin-top:14px"><h3>Track this book</h3>
   <div class="mut">Tracking this book: <b>${esc(v.name)}</b>${v.author?` · ${esc(v.author)}`:''}</div>
   <div class="row" style="margin-top:10px"><input id="cbin" placeholder="Paste OneDrive Embed link or the iframe code" value="${esc(u)}"><button class="p" data-a="cbset">Show</button></div>
-  <div class="mut" style="margin-top:6px">OneDrive → open the Word file → File → Share → Embed. Normal share links (1drv.ms) cannot be previewed.${v.cbUp?` Link saved ${hD(v.cbUp)}.`:''}</div>
+  <div class="mut" style="margin-top:6px">OneDrive → open the Word file → File → Share → Embed → Generate, then paste that code. A plain Share link usually stays blank.${v.cbUp?` Link saved ${hD(v.cbUp)}.`:''}</div>
   ${u?`<div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap"><button data-a="cbref">Refresh</button><button data-a="cbauto" class="${v.cbAuto?'p':''}">Auto refresh 30s: ${v.cbAuto?'On':'Off'}</button><a href="${esc(u)}" target="_blank" rel="noopener"><button type="button">Open in new tab</button></a><button data-a="cbclr">Remove link</button></div>
   <iframe id="cbfr" class="cbf" src="${esc(u)}" allowfullscreen referrerpolicy="no-referrer" style="height:75vh;min-height:480px"></iframe>`:`<div class="mut" style="text-align:center;padding:40px 0">No Word file linked yet. Upload your book’s Word file to OneDrive, then paste its Embed link here.</div>`}</div>`;
   const i=$('#cbin');if(i)i.onkeydown=e=>{if(e.key==='Enter')cbAct('cbset')};
@@ -1292,8 +1292,8 @@ function cbAct(a){
   const v=D[cur];if(!v)return;
   if(a==='cbset'){const raw=($('#cbin').value||'').trim(),u=cbSrc(raw);
     if(!u){toast(raw?'Use the Embed link (https) or the iframe code':'Paste a link first');return}
-    if(/\/\/1drv\.ms\//i.test(u)){toast('This is a Share link. Use File → Share → Embed instead');return}
-    save(cur,{cbLink:u,cbUp:Date.now()});cbBox()}
+    let w=u;if(/\/\/1drv\.ms\//i.test(w)&&!/[?&]em=/.test(w)){w+=(w.includes('?')?'&':'?')+'em=2';toast('Embed setting added. If the preview stays blank, generate a new Embed code in OneDrive.')}
+    save(cur,{cbLink:w,cbUp:Date.now()});cbBox()}
   else if(a==='cbref'){const f=$('#cbfr');if(f)f.src=f.src}
   else if(a==='cbauto'){save(cur,{cbAuto:!v.cbAuto});cbBox()}
   else if(a==='cbclr'){if(confirm('Remove the Word link?')){save(cur,{cbLink:'',cbUp:0});cbBox()}}
