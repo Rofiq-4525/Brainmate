@@ -500,14 +500,36 @@ html,body{background:var(--bg)}
 @media(prefers-reduced-motion:reduce){#rdd.dd,.bcar{transition:none}}
 /* ====== Writers-mate: Concept | Part of book | Full book ====== */
 .wtw{position:relative}
-.wtw .tab svg{width:12px;height:12px;margin-left:4px;flex:none;transition:transform .15s}
-.wtw.open .tab[data-ws=part] svg{transform:rotate(180deg)}
-.dd.ptm{left:50%;right:auto;top:calc(100% + 4px);transform:translateX(-50%);min-width:200px;width:max-content;max-width:92vw}
-.ptm button.on{font-weight:600;background:var(--soft)}
 /* ====== Writers-mate: book covers ====== */
-.grid.bkg{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-@media(min-width:768px){#secs .grid.bkg{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}}
-@media(min-width:1024px){#secs .grid.bkg{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.grid.bkg{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(min-width:768px){#secs .grid.bkg{grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}}
+@media(min-width:1024px){#secs .grid.bkg{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.grid.bkg.bkbig{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:0 14px}
+@media(min-width:768px){#secs .grid.bkg.bkbig{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:0 24px}}
+@media(min-width:1024px){#secs .grid.bkg.bkbig{grid-template-columns:repeat(5,minmax(0,1fr));padding:0 16px}}
+#secs .grid.bkbig .card.bkc.bk-f{padding:14px 12px 12px;gap:7px}
+.grid.bkbig .bk-t{font-size:calc(var(--fs,1rem)*.92)}
+.grid.bkbig .bk-t.bn{font-size:calc(var(--fs,1rem)*.98)}
+.grid.bkbig .bk-c{font-size:.68rem;padding:2px 10px}
+.grid.bkbig .bk-a{font-size:.9rem;padding-top:7px}
+.grid.bkbig .bk-a.bn{font-size:.76rem}
+.grid.bkbig .bk-ic svg.bk-ob{width:min(75%,110px)}
+#secs .card.bkc.bk-img{padding:0;gap:0;border:none;overflow:hidden;background:var(--soft);box-shadow:7px 3px 10px -3px rgba(0,0,0,.34);transition:transform .18s ease,box-shadow .18s ease}
+#secs .card.bkc.bk-img:hover{transform:translateX(-2px);box-shadow:10px 4px 14px -3px rgba(0,0,0,.38)}
+#secs .card.bkc.bk-img img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;-webkit-user-drag:none}
+.sh h2 .scnt{font-weight:500;color:var(--mut);font-size:.82em;margin-left:6px}
+.sh{scroll-margin-top:84px}
+.bkmore{display:flex;align-items:center;justify-content:center;gap:5px;margin:10px auto 0;padding:3px 12px;border:1px solid var(--line);background:var(--soft);box-shadow:none;border-radius:999px;font-size:.7rem;font-weight:500;color:var(--mut);transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.bkmore:hover,.bkmore:focus-visible{color:var(--ink);border-color:var(--lo)}
+.bkmore svg{width:12px;height:12px;transition:transform .35s ease}
+.bkmore.open svg{transform:rotate(180deg)}
+.bkx{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1)}
+.bkx.open{grid-template-rows:1fr}
+.bkxi{overflow:hidden;min-height:0}
+.bkxi>.grid{opacity:0;transform:translateY(-6px);transition:opacity .3s ease,transform .4s cubic-bezier(.4,0,.2,1)}
+.bkx.open .bkxi>.grid{opacity:1;transform:none}
+.bkx:not(.open) .bkxi{visibility:hidden;transition:visibility 0s .4s}
+@media(prefers-reduced-motion:reduce){.bkx,.bkxi>.grid,.bkmore svg{transition:none}}
 #secs .card.bkc{aspect-ratio:2/3;border-radius:12px;display:flex;flex-direction:column}
 #secs .card.bkc.bk-f{justify-content:space-between;gap:8px;padding:14px 12px 12px;border:1px solid hsl(var(--h) 45% 78%);border-top:4px solid #c9a24a;border-left:5px solid #c9a24a;
   background:linear-gradient(165deg,hsl(var(--h) 80% 94%),hsl(var(--h) 62% 84%));color:hsl(var(--h) 45% 16%);
@@ -541,19 +563,9 @@ html,body{background:var(--bg)}
 #rdd .rsb span{font-weight:inherit}
 #rdd .rsl{font-weight:600}
 /* Concept (top, centred) */
-.cptw{margin-top:18px;text-align:center}
 .cpth{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
-.cptw textarea{display:block;text-align:center;border:none;background:none;min-height:60px;resize:none;overflow:hidden;font-size:1.05rem;line-height:1.7;padding:6px 8px;border-radius:0}
-.cptw textarea:focus{outline:none;box-shadow:none}
 /* Composed book */
-.bkdoc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px 22px;margin-top:16px;font-family:Georgia,'Tiro Bangla',serif;line-height:1.85;box-shadow:var(--fx-project)}
-.bkcov{text-align:center;padding:36px 0 28px;border-bottom:1px solid var(--line);margin-bottom:8px}
-.bkct{font-size:1.7rem;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
-.bkca{margin-top:10px;font-style:italic;color:var(--mut)}
-.bkdoc h2{font-size:1.25rem;margin:34px 0 10px;text-align:center;letter-spacing:.02em}
-.bkdoc h3{font-size:1.05rem;margin:22px 0 6px}
-.bkb{overflow-wrap:anywhere}
-.bkdoc img{max-width:100%;height:auto}
+
 </style>
 <base target="_blank">
 </head>
@@ -682,7 +694,7 @@ fbDone=true;
 const ROLES={
   brain:{name:'Brainmate',sub:'Your creating, aspiring and imagining ideas in one place.',ic:'brain',types:['project','dream','idea']},
   business:{name:'Business-mate',sub:'Your business creating, aspiring and imagining ideas in one place.',ic:'briefcase',types:['brun','bproject','bdream','bidea']},
-  writers:{name:'Writers-mate',sub:'Your books, upcoming books and imagination in one place.',ic:'pen',types:['wproject','wdream','widea']},
+  writers:{name:'Writers-mate',sub:'Your books, upcoming books and imagination in one place.',ic:'pen',types:['wdone','wproject','wdream','widea']},
   dev:{name:'Developers-mate',sub:'Your running, upcoming and imagining projects in one place.',ic:'code',types:['dproject','ddream','didea']},
   learning:{name:'Learning-mate',sub:'Your running, upcoming and pending topics in one place.',ic:'bulb',types:['lrun','lup','lpend']},
   study:{name:'Study-mate',sub:'Your running, upcoming and pending notes in one place.',ic:'cap',types:['srun','sup','spend']},
@@ -696,6 +708,7 @@ const TYPES={
   bproject:{l:'Creating-business',s:'Creating',kind:'project',role:'business'},
   bdream:{l:'Aspiring-business idea',s:'Aspiring',kind:'dream',role:'business'},
   bidea:{l:'Imagining-business idea',s:'Imagining',kind:'idea',role:'business'},
+  wdone:{l:'Completed book',s:'Completed',kind:'done',role:'writers'},
   wproject:{l:'Creating-book',s:'Creating',kind:'project',role:'writers'},
   wdream:{l:'Upcoming book',s:'Upcoming',kind:'dream',role:'writers'},
   widea:{l:'Imagining book idea',s:'Imagining',kind:'idea',role:'writers'},
@@ -715,11 +728,10 @@ const MOVER={study:1,learning:1,readers:1};
 let role=(()=>{try{const r=localStorage.getItem('bm_role');return ROLES[r]?r:'brain'}catch(e){return 'brain'}})();
 const RT=()=>ROLES[role].types;
 const TABS=[['rough','Rough note'],['full','Full note'],['list','List'],['check','Checklist'],['drive','Drive preview']];
-const WTABS=[['intro','Introduction'],['toc','Index (Toc)'],['chap','Chapter'],['back','Back matter']];
 const PG={intro:'Introduction'};
-const NH={rough:'Rough notes',full:'Full notes',toc:'Index (Toc)',chap:'Chapters',back:'Back matter'};
+const NH={concept:'Concept notes',rough:'Rough notes',full:'Full notes',toc:'Index (Toc)',chap:'Chapters',back:'Back matter'};
 const isW=()=>!!(cur&&D[cur]&&TYPES[D[cur].type]&&TYPES[D[cur].type].role==='writers');
-const tabsFor=()=>isW()?WTABS:TABS;
+const tabsFor=()=>TABS;
 const P={
  home:'<path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
@@ -754,7 +766,7 @@ copy:'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.
 file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>'
 };
 const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${P[n]}</svg>`;
-const DF=()=>({checklist:[],features:[],lists:[],checks:[],notes:[],desc:'',rough:'',roughNotes:[],fullNotes:[],tocNotes:[],chapNotes:[],backNotes:[],concept:'',intro:'',driveId:'',status:'In progress'});
+const DF=()=>({checklist:[],features:[],lists:[],checks:[],notes:[],desc:'',rough:'',roughNotes:[],fullNotes:[],tocNotes:[],chapNotes:[],backNotes:[],conNotes:[],concept:'',intro:'',driveId:'',status:'In progress'});
 const D={};let loading=false,authWait=false,guestLoaded=false,cacheUid=null,pre='guest',lt=null;let cur=null,tab='rough',filter='all',mode=null,user=null,unsub=null;
 
 const $=s=>document.querySelector(s);
@@ -1087,29 +1099,30 @@ let seeded=false;try{seeded=!!localStorage.getItem('mw_seeded')}catch(e){}
 
 const tabMQ=matchMedia('(min-width:768px)'),pcMQ=matchMedia('(min-width:1024px)');
 const slots=()=>pcMQ.matches?8:tabMQ.matches?6:4;
-const wslots=()=>pcMQ.matches?5:tabMQ.matches?4:2;
+const bkOpen={},BIGK=k=>k==='wproject'||k==='wdone';
+const wslots=k=>BIGK(k)?(pcMQ.matches?5:tabMQ.matches?4:2):(pcMQ.matches?6:tabMQ.matches?5:3);
 const hueOf=s=>{let h=7;for(const c of String(s||'')){h=(h*31+c.charCodeAt(0))>>>0}return h%360};
 const BKOB='<svg class="bk-ob" viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="pg" d="M32 11C27 7 18 6 6 7v31c12-1 21 0 26 4z"/><path class="pg" d="M32 11c5-4 14-5 26-4v31c-12-1-21 0-26 4z"/><path d="M32 11v31"/><path d="M11 15c5 0 10 .6 16 2.6M11 21c5 0 10 .6 16 2.6M11 27c5 0 10 .6 16 2.6M53 15c-5 0-10 .6-16 2.6M53 21c-5 0-10 .6-16 2.6M53 27c-5 0-10 .6-16 2.6" stroke-width="1.5" opacity=".6"/><path d="M6 41.5c12-1 21 0 26 4 5-4 14-5 26-4" stroke-width="1.5" opacity=".5"/></svg>';
 const bookImg=u=>/^data:image\//.test(u||'')?u:'';
 const isBn=s=>/[\u0980-\u09FF]/.test(s||'');
 const bkFs=n=>{const l=[...String(n||'')].length;return l<=12?.92:l<=22?.83:l<=34?.75:.68};
-const bookCard=(id,v,k)=>`<div class="card bkc bk-f" data-id="${id}" data-t="${k}" style="--h:${hueOf(v.name)}"><div class="bk-top"><div class="bk-t${isBn(v.name)?' bn':''}" style="--fs:${bkFs(v.name)}rem">${esc(v.name)}</div>${v.cat?`<div class="bk-c">${esc(v.cat)}</div>`:''}</div><div class="bk-ic">${bookImg(v.img)?`<img src="${bookImg(v.img)}" alt="">`:BKOB}</div>${v.author?`<div class="bk-a${isBn(v.author)?' bn':''}"><span>${esc(v.author)}</span></div>`:''}</div>`;
-const bookEmpty=k=>`<div class="card empty bkc" data-new="${k}" data-t="${k}"><span class="bk-pl">${ic('plus',30)}</span><div class="nm">Add new</div></div>`;
+const bookCard=(id,v,k)=>bookImg(v.img)?`<div class="card bkc bk-img" data-id="${id}" data-t="${k}" title="${esc(v.name)}"><img src="${bookImg(v.img)}" alt="${esc(v.name)}" draggable="false"></div>`:`<div class="card bkc bk-f" data-id="${id}" data-t="${k}" style="--h:${hueOf(v.name)}"><div class="bk-top"><div class="bk-t${isBn(v.name)?' bn':''}" style="--fs:${bkFs(v.name)}rem">${esc(v.name)}</div>${v.cat?`<div class="bk-c">${esc(v.cat)}</div>`:''}</div><div class="bk-ic">${BKOB}</div>${v.author?`<div class="bk-a${isBn(v.author)?' bn':''}"><span>${esc(v.author)}</span></div>`:''}</div>`;
+const bookEmpty=k=>`<div class="card empty bkc" data-new="${k}" data-t="${k}"><span class="bk-pl">${ic('plus',24)}</span><div class="nm">Add new</div></div>`;
 function home(){
   document.querySelectorAll('.bar .chip').forEach(c=>c.classList.toggle('on',c.dataset.k===filter));
+  const wr=k=>role==='writers'?' bkg'+(BIGK(k)?' bkbig':''):'';
   if(loading&&!Object.keys(D).length){
-    $('#secs').innerHTML=RT().map(k=>[k,TYPES[k]]).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>`<div class="sh" data-t="${k}"><h2>${t.l}</h2></div><div class="grid${role==='writers'?' bkg':''}">${`<div class="card sk${role==='writers'?' bkc':''}" data-t="${k}"><div class="im"></div><div class="tx"><div class="nm"></div></div></div>`.repeat(slots())}</div>`).join('');
+    $('#secs').innerHTML=RT().map(k=>[k,TYPES[k]]).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>`<div class="sh" data-t="${k}"><h2>${t.l}</h2></div><div class="grid${wr(k)}">${`<div class="card sk${role==='writers'?' bkc':''}" data-t="${k}"><div class="im"></div><div class="tx"><div class="nm"></div></div></div>`.repeat(slots())}</div>`).join('');
     return;
   }
-  let h='';
-  h+=RT().map(k=>[k,TYPES[k]]).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
+  $('#secs').innerHTML=RT().map(k=>[k,TYPES[k]]).filter(([k])=>filter==='all'||filter===k).map(([k,t])=>{
     const items=Object.entries(D).filter(([,v])=>v.type===k).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0));
     const W=TYPES[k].role==='writers';
-    let c=items.map(([id,v])=>{if(W)return bookCard(id,v,k);const s=cnt(v),n=nCnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im cn"><div class="ch">Total note: ${n.t}</div><div>Rough note: ${n.r}</div><div>Full note: ${n.f}</div></div><div class="tx"><div class="nm">${esc(v.name)}</div>${MOVER[TYPES[k].role]?RT().filter(x=>x!==k).map(x=>`<button class="mv" data-mv="${id}" data-to="${x}">→ ${TYPES[x].s}</button>`).join(''):''}</div></div>`}).join('');
-    c+=W?bookEmpty(k).repeat(Math.max(0,wslots()-items.length)):`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im cn"><div class="ch">Total note: 0</div><div>Rough note: 0</div><div>Full note: 0</div><span class="pl">${ic('plus',34)}</span></div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,slots()-items.length));
-    return `<div class="sh" data-t="${k}"><h2>${t.l}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid${W?' bkg':''}">${c}</div>`;
+    const lim=BIGK(k)?2:2*wslots(k),more=W&&items.length>lim,shown=more?items.slice(-lim):items,older=more?items.slice(0,-lim):[];
+    let c=shown.map(([id,v])=>{if(W)return bookCard(id,v,k);const s=cnt(v),n=nCnt(v);return `<div class="card" data-id="${id}" data-t="${k}"><div class="im cn"><div class="ch">Total note: ${n.t}</div><div>Rough note: ${n.r}</div><div>Full note: ${n.f}</div></div><div class="tx"><div class="nm">${esc(v.name)}</div>${MOVER[TYPES[k].role]?RT().filter(x=>x!==k).map(x=>`<button class="mv" data-mv="${id}" data-to="${x}">→ ${TYPES[x].s}</button>`).join(''):''}</div></div>`}).join('');
+    c+=W?(more?'':bookEmpty(k).repeat(Math.max(0,wslots(k)-items.length))):`<div class="card empty" data-new="${k}" data-t="${k}"><div class="im cn"><div class="ch">Total note: 0</div><div>Rough note: 0</div><div>Full note: 0</div><span class="pl">${ic('plus',34)}</span></div><div class="tx"><div class="nm">Add new</div></div></div>`.repeat(Math.max(0,slots()-items.length));
+    return `<div class="sh" data-t="${k}"><h2>${t.l}${W?`<span class="scnt">(${items.length})</span>`:''}</h2><button class="p plus" data-new="${k}" aria-label="Add new" title="Add new">${ic('plus',18)}</button></div><div class="grid${wr(k)}">${c}</div>${more?`<div class="bkx${bkOpen[k]?' open':''}" data-x="${k}"><div class="bkxi"><div class="grid bkg${BIGK(k)?' bkbig':''}" style="margin-top:14px">${older.map(([id,v])=>bookCard(id,v,k)).join('')}</div></div></div><button class="bkmore${bkOpen[k]?' open':''}" data-more="${k}" data-n="${older.length}"><span>${bkOpen[k]?'Show less':older.length+' more book'+(older.length===1?'':'s')}</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>`:''}`;
   }).join('');
-  $('#secs').innerHTML=h;
 }
 [tabMQ,pcMQ].forEach(m=>m.addEventListener('change',()=>{if(!$('#home').classList.contains('hide'))home()}));
 $('#secs').addEventListener('click',e=>{
@@ -1117,6 +1130,15 @@ $('#secs').addEventListener('click',e=>{
   const f=e.target.closest('[data-f]');if(f){filter=f.dataset.f;return home()}
   const mv=e.target.closest('[data-mv]');if(mv){e.stopPropagation();return moveItem(mv.dataset.mv,mv.dataset.to)}
   const x=e.target.closest('[data-del]');if(x){e.stopPropagation();return delItem(x.dataset.del)}
+  const mo=e.target.closest('[data-more]');
+  if(mo){
+    const k=mo.dataset.more,n=+mo.dataset.n,on=bkOpen[k]=!bkOpen[k];
+    mo.classList.toggle('open',on);
+    const bx=document.querySelector('.bkx[data-x="'+k+'"]');if(bx)bx.classList.toggle('open',on);
+    mo.querySelector('span').textContent=on?'Show less':n+' more book'+(n===1?'':'s');
+    if(!on){const sh=document.querySelector('.sh[data-t="'+k+'"]');if(sh)sh.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'})}
+    return;
+  }
   const n=e.target.closest('[data-new]');if(n)return openModal({type:n.dataset.new});
   const c=e.target.closest('[data-id]');if(c)openDetail(c.dataset.id);
 });
@@ -1162,42 +1184,34 @@ $('#msave').onclick=async()=>{
 };
 
 function openDetail(id){
-  cur=id;nid=null;const v=D[id],t=TYPES[v.type];tab=isW()?'intro':'rough';wsec='concept';['tocNotes','chapNotes','backNotes'].forEach(f=>{if(!Array.isArray(v[f]))v[f]=[]});
+  cur=id;nid=null;const v=D[id],t=TYPES[v.type];tab=isW()?'concept':'rough';wsec='concept';['conNotes','tocNotes','chapNotes','backNotes'].forEach(f=>{if(!Array.isArray(v[f]))v[f]=[]});
   $('#home').classList.add('hide');const el=$('#detail');el.classList.remove('hide');el.dataset.t=v.type;
   el.innerHTML=`
   <div class="row dtop" style="margin-top:14px;justify-content:space-between"><button id="back" aria-label="Back" title="Back">${ic('back',22)}</button><div class="dtl">${esc(v.name)}${v.author?`<small class="dau">by ${esc(v.author)}</small>`:''}</div><div class="dmw"><button id="dots" aria-label="More options" title="More" aria-haspopup="true">${ic('dots',22)}</button><div class="dd dm" id="dm"><button id="edit">${ic('edit',16)} Edit</button><button class="d" id="del">${ic('trash',16)} Delete</button></div></div></div>
   ${isW()?wBar():`<div class="tabs">${tabsFor().map(([k,l])=>`<button class="tab ${k===tab?'on':''}" data-tab="${k}">${l}</button>`).join('')}</div>`}
-  <div id="cpw">${isW()?cptHtml():''}</div>
   <div id="tc"></div>
-  <div id="bkw"></div>`;
+  <div id="bkw"></div>
+  <div id="cbw"></div>`;
   scrollTo(0,0);
   $('#back').onclick=()=>nid?closeNote():goHome();
   $('#dots').onclick=e=>{e.stopPropagation();$('#dm').classList.toggle('on')};
   $('#edit').onclick=()=>{$('#dm').classList.remove('on');openModal({id})};
   $('#del').onclick=()=>{$('#dm').classList.remove('on');delItem(id)};
   const tbs=el.querySelector('.tabs');if(tbs)tbs.onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;sdp.flush();tab=b.dataset.tab;nid=null;lid=null;el.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));renderTab()};
-  el.oninput=e=>{const t=e.target;if(t.id==='cpx'){cpGrow(t);D[cur].concept=t.value;sdp(cur,{concept:t.value})}};
   el.onclick=e=>{
-    if(e.target.closest('[data-a=bprint]')){printBook();return}
-    const pm=$('#ptm'),wt=$('#detail .wtw');
+    const bd=e.target.closest('#bkw [data-a^=bd]');
+    if(bd){bdAct(bd.dataset.a);return}
+    const cb=e.target.closest('#cbw [data-a]');
+    if(cb){cbAct(cb.dataset.a);return}
     const ws=e.target.closest('[data-ws]');
-    if(ws){
-      const k=ws.dataset.ws;
-      if(k==='part'){if(wsec!=='part')setWs('part');const o=pm.classList.toggle('on');wt.classList.toggle('open',o)}
-      else{pm.classList.remove('on');wt.classList.remove('open');if(wsec!==k)setWs(k)}
-      return;
-    }
-    const pt=e.target.closest('[data-pt]');
-    if(pt){sdp.flush();tab=pt.dataset.pt;nid=null;lid=null;pm.classList.remove('on');wt.classList.remove('open');setWs('part');return}
-    if(pm&&!e.target.closest('#ptm')){pm.classList.remove('on');wt&&wt.classList.remove('open')}
+    if(ws){const k=ws.dataset.ws;if(wsec!==k)setWs(k)}
   };
-  {const c=$('#cpx');if(c){c.value=v.concept||'';cpGrow(c)}}
-  bindTc();nMig();lMig();if(isW())setWs('concept');else renderTab();
+  bindTc();nMig();cMig();lMig();if(isW())setWs('concept');else renderTab();
 }
 let nid=null,lcPrev='rough',lcF='',lid=null,lx=null,lxF=false;
 const LCT={list:'List',check:'Checklist'};
 const lit=i=>typeof i==='string'?{t:i,x:''}:i;
-const NK={rough:'roughNotes',full:'fullNotes',toc:'tocNotes',chap:'chapNotes',back:'backNotes'};
+const NK={concept:'conNotes',rough:'roughNotes',full:'fullNotes',toc:'tocNotes',chap:'chapNotes',back:'backNotes'};
 const grow=t=>{if(!t||t.isContentEditable)return;t.style.height='auto';t.style.height=Math.max(t.scrollHeight,Math.round(innerHeight*.5))+'px'};
 const nUid=()=>'n'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 function lMig(){
@@ -1205,6 +1219,17 @@ function lMig(){
   const t=Date.now(),p={lm:1,lists:[...(v.lists||[])],checks:[...(v.checks||[])]};
   if((v.features||[]).length)p.lists.push({id:nUid(),t:'',items:[...v.features],at:t,up:t});
   if((v.checklist||[]).length)p.checks.push({id:nUid(),t:'',items:v.checklist.map(x=>({...x})),at:t,up:t});
+  Object.assign(D[cur],p);
+  if(cloud())F.updateDoc(dref(cur),p).catch(e=>fail('Save failed',e));else saveLocal();
+}
+function cMig(){
+  const v=D[cur];if(authWait||!isW()||(v.cm&&v.cd))return;
+  const t=Date.now(),p={cm:1,cd:1};
+  if(!v.cm&&(v.concept||'').trim()&&!v.conNotes.length)p.conNotes=[{id:nUid(),t:'',x:v.concept,at:t,up:t}];
+  if(!v.cd&&!v.conNotes.length&&!p.conNotes){
+    const demo=[['Introduction','Plan your introduction here: what this book is about and who it is for.'],['Index (Toc)','Outline the structure of the book and list the chapters you plan to write.'],['Chapters','Chapter ideas: write each chapter title with a one-line summary.'],['Back matter','Appendix, acknowledgements, references, about the author.']];
+    p.conNotes=demo.map(([ti,x],i)=>({id:nUid(),t:ti,x,at:t+(3-i),up:t+(3-i)}));
+  }
   Object.assign(D[cur],p);
   if(cloud())F.updateDoc(dref(cur),p).catch(e=>fail('Save failed',e));else saveLocal();
 }
@@ -1237,41 +1262,63 @@ function renderNotes(v,k){
   const c={n:0,ar:0,tr:0};v[NK[k]].forEach(x=>c[x.tr?'tr':x.ar?'ar':'n']++);
   return `<div class="nhd"><div class="nh1">${NH[k]}</div><div class="chips" style="margin-top:10px">${[['n','Notes'],['ar','Archive'],['tr','Trash']].map(([m,l])=>`<button class="chip${nView===m?' on':''}" data-a="nview" data-v="${m}">${l} ${c[m]}</button>`).join('')}</div></div><div id="nlist">${nCards(v,k)}</div><button class="fab" data-a="nnew" aria-label="New note" title="New note">${ic('plus',24)}</button>`;
 }
-const bkSecs=v=>{
-  const nl=f=>[...(v[f]||[])].filter(n=>!n.tr&&!n.ar&&!n.lk&&((n.t||'').trim()||(n.x||'').trim())).sort((a,b)=>(a.at||0)-(b.at||0)).map(n=>({t:n.t||'',h:nHtml(n)}));
-  const pg=x=>(x||'').trim()?[{t:'',h:esc(x).replace(/\n/g,'<br>')}]:[];
-  return[['Introduction',pg(v.intro)],['Index (Toc)',nl('tocNotes')],['Chapters',nl('chapNotes')],['Back matter',nl('backNotes')]].filter(x=>x[1].length);
-};
-const bkDoc=v=>{
-  const S=bkSecs(v);
-  if(!S.length)return '';
-  return `<div class="bkdoc"><div class="bkcov"><div class="bkct">${esc(v.name)}</div>${v.author?`<div class="bkca">${esc(v.author)}</div>`:''}</div>${S.map(([l,it])=>`<h2>${esc(l)}</h2>${it.map(n=>`${n.t?`<h3>${esc(n.t)}</h3>`:''}<div class="bkb">${n.h}</div>`).join('')}`).join('')}</div>`;
-};
-function renderBook(v){
-  const d=bkDoc(v);
-  return `<div style="margin-top:14px"></div>${d?`<div class="row" style="margin-top:10px"><button class="p" data-a="bprint">Print / Save as PDF</button></div>${d}`:'<div class="mut" style="text-align:center;padding:48px 0">Nothing to compose yet. Write in Introduction, Index (Toc), Chapter or Back matter.</div>'}`;
-}
-function printBook(){
-  const v=D[cur];if(!v)return;
-  const fr=document.createElement('iframe');fr.style.cssText='position:fixed;width:0;height:0;border:0';document.body.appendChild(fr);
-  fr.onload=()=>{toast('Choose “Save as PDF” in the print window');fr.contentWindow.focus();fr.contentWindow.print();setTimeout(()=>fr.remove(),60000)};
-  fr.srcdoc=`<!doctype html><meta charset="utf-8"><title>${esc(v.name)}</title><style>body{font:16px/1.85 Georgia,'Tiro Bangla',serif;max-width:720px;margin:24px auto;padding:0 16px}img{max-width:100%}h2{text-align:center;page-break-before:always;margin-top:0}.bkcov{text-align:center;padding:120px 0}.bkct{font-size:34px;font-weight:700}.bkca{margin-top:12px;font-style:italic}.bkcov+h2{page-break-before:always}</style>${bkDoc(v)}`;
-}
-const cptHtml=()=>`<div class="cptw"><textarea id="cpx" rows="2" placeholder="Write the concept of this book…" autocomplete="off"></textarea></div>`;
 let wsec='concept';
-const wBar=()=>`<div class="wtw"><div class="tabs"><button class="tab${wsec==='concept'?' on':''}" data-ws="concept">Concept note</button><button class="tab${wsec==='part'?' on':''}" data-ws="part">Part of book<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button><button class="tab${wsec==='full'?' on':''}" data-ws="full">Full book</button></div><div class="dd ptm" id="ptm">${WTABS.map(([k,l])=>`<button data-pt="${k}"${k===tab?' class="on"':''}>${l}</button>`).join('')}</div></div>`;
+const wBar=()=>`<div class="wtw"><div class="tabs"><button class="tab${wsec==='concept'?' on':''}" data-ws="concept">Concept note</button><button class="tab${wsec==='full'?' on':''}" data-ws="full">Track this book</button><button class="tab${wsec==='comp'?' on':''}" data-ws="comp">Composed book</button></div></div>`;
 function setWs(k){
   wsec=k;
   document.querySelectorAll('#detail .wtw .tab').forEach(b=>b.classList.toggle('on',b.dataset.ws===k));
-  document.querySelectorAll('#ptm button').forEach(b=>b.classList.toggle('on',b.dataset.pt===tab));
-  const cw=$('#cpw'),tc=$('#tc');
-  if(cw)cw.style.display=k==='concept'?'':'none';
-  if(tc)tc.style.display=k==='part'?'':'none';
-  if(k==='part')renderTab();else bkBox();
-  if(k==='concept'){const c=$('#cpx');if(c)cpGrow(c)}
+  const tc=$('#tc');
+  if(tc)tc.style.display=k==='concept'?'':'none';
+  if(k==='concept')renderTab();else bkBox();
+  cbBox();
 }
-const cpGrow=t=>{t.style.height='auto';t.style.height=Math.max(t.scrollHeight,60)+'px'};
-const bkBox=()=>{const w=$('#bkw');if(!w||!cur||!D[cur])return;w.innerHTML=isW()&&wsec==='full'?renderBook(D[cur]):''};
+const cbSrc=t=>{t=(t||'').trim();const m=t.match(/<iframe[^>]*\ssrc=["']([^"']+)["']/i);if(m)t=m[1];t=t.replace(/&amp;/g,'&');return/^https:\/\/[^\s"'<>]+$/i.test(t)?t:''};
+let cbTm=null;
+function cbBox(){
+  clearInterval(cbTm);cbTm=null;
+  const w=$('#cbw');if(!w)return;
+  const v=D[cur];if(!v||!isW()||wsec!=='full'){w.innerHTML='';return}
+  const u=v.cbLink||'';
+  w.innerHTML=`<div class="panel" style="margin-top:14px"><h3>Track this book</h3>
+  <div class="mut">Tracking this book: <b>${esc(v.name)}</b>${v.author?` · ${esc(v.author)}`:''}</div>
+  <div class="row" style="margin-top:10px"><input id="cbin" placeholder="Paste OneDrive Embed link or the iframe code" value="${esc(u)}"><button class="p" data-a="cbset">Show</button></div>
+  <div class="mut" style="margin-top:6px">OneDrive → open the Word file → File → Share → Embed. Normal share links (1drv.ms) cannot be previewed.${v.cbUp?` Link saved ${hD(v.cbUp)}.`:''}</div>
+  ${u?`<div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap"><button data-a="cbref">Refresh</button><button data-a="cbauto" class="${v.cbAuto?'p':''}">Auto refresh 30s: ${v.cbAuto?'On':'Off'}</button><a href="${esc(u)}" target="_blank" rel="noopener"><button type="button">Open in new tab</button></a><button data-a="cbclr">Remove link</button></div>
+  <iframe id="cbfr" class="cbf" src="${esc(u)}" allowfullscreen referrerpolicy="no-referrer" style="height:75vh;min-height:480px"></iframe>`:`<div class="mut" style="text-align:center;padding:40px 0">No Word file linked yet. Upload your book’s Word file to OneDrive, then paste its Embed link here.</div>`}</div>`;
+  const i=$('#cbin');if(i)i.onkeydown=e=>{if(e.key==='Enter')cbAct('cbset')};
+  if(u&&v.cbAuto)cbTm=setInterval(()=>{if(wsec!=='full'||document.hidden)return;const f=$('#cbfr');if(f)f.src=f.src},30000);
+}
+function cbAct(a){
+  const v=D[cur];if(!v)return;
+  if(a==='cbset'){const raw=($('#cbin').value||'').trim(),u=cbSrc(raw);
+    if(!u){toast(raw?'Use the Embed link (https) or the iframe code':'Paste a link first');return}
+    if(/\/\/1drv\.ms\//i.test(u)){toast('This is a Share link. Use File → Share → Embed instead');return}
+    save(cur,{cbLink:u,cbUp:Date.now()});cbBox()}
+  else if(a==='cbref'){const f=$('#cbfr');if(f)f.src=f.src}
+  else if(a==='cbauto'){save(cur,{cbAuto:!v.cbAuto});cbBox()}
+  else if(a==='cbclr'){if(confirm('Remove the Word link?')){save(cur,{cbLink:'',cbUp:0});cbBox()}}
+}
+const cdSrc=t=>{t=(t||'').trim();let m;
+  if(m=t.match(/drive\.google\.com\/(?:drive\/(?:u\/\d+\/)?folders\/|embeddedfolderview\?id=)([\w-]+)/))return 'https://drive.google.com/embeddedfolderview?id='+m[1]+'#grid';
+  if(m=t.match(/drive\.google\.com\/file\/d\/([\w-]+)/))return 'https://drive.google.com/file/d/'+m[1]+'/preview';
+  if(m=t.match(/docs\.google\.com\/(document|presentation|spreadsheets)\/d\/([\w-]+)/))return 'https://docs.google.com/'+m[1]+'/d/'+m[2]+'/preview';
+  return ''};
+const cdOpen=u=>u.replace('embeddedfolderview?id=','drive/folders/').replace(/#.*$/,'').replace(/\/preview$/,u.includes('docs.google.com')?'/edit':'/view');
+const bdPanel=v=>{const u=v.cdLink||'';
+  return `<div class="panel" style="margin-top:14px"><h3>Composed book</h3>
+  <div class="mut">Link the Google Drive folder or file (PDF, Doc) where your composed book is saved.</div>
+  <div class="row" style="margin-top:10px"><input id="bdin" placeholder="Google Drive folder or file link" value="${esc(u?cdOpen(u):'')}"><button class="p" data-a="bdset">Show</button></div>
+  <div class="mut" style="margin-top:6px">It must be shared as “Anyone with the link — Viewer”.</div>
+  ${u?`<div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap"><button data-a="bdref">Refresh</button><a href="${esc(cdOpen(u))}" target="_blank" rel="noopener"><button type="button">Open in new tab</button></a><button data-a="bdclr">Remove link</button></div><iframe id="bdfr" src="${esc(u)}" loading="lazy" allowfullscreen style="height:75vh;min-height:480px"></iframe>`:''}</div>`};
+function bdAct(a){
+  const v=D[cur];if(!v)return;
+  if(a==='bdset'){const raw=($('#bdin').value||'').trim(),u=cdSrc(raw);
+    if(!u){toast(raw?'Use a Google Drive folder or file link':'Paste a link first');return}
+    save(cur,{cdLink:u});bkBox()}
+  else if(a==='bdref'){const f=$('#bdfr');if(f)f.src=f.src}
+  else if(a==='bdclr'){if(confirm('Remove the Drive link?')){save(cur,{cdLink:''});bkBox()}}
+}
+const bkBox=()=>{const w=$('#bkw');if(!w||!cur||!D[cur])return;w.innerHTML=isW()&&wsec==='comp'?bdPanel(D[cur]):'';const i=$('#bdin');if(i)i.onkeydown=e=>{if(e.key==='Enter')bdAct('bdset')}};
 const bkUp=deb(()=>bkBox(),500);
 function renderPage(v,k){
   return `<div class="nhd"><div class="nh1">${PG[k]}</div></div><div class="ne"><textarea id="pgx" data-f="${k}" placeholder="Write here…" autocomplete="off"></textarea></div>`;
@@ -1614,7 +1661,6 @@ function bindTc(){
     const b=e.target.closest('[data-a]');if(!b)return;
     const v=D[cur],a=b.dataset.a,i=+b.dataset.i,inp=id=>$(id).value.trim();
     if(a==='nview'){nView=b.dataset.v;renderTab()}
-    else if(a==='bprint')printBook()
     else if(a==='nnew'){nView='n';const f=NK[tab],t=Date.now(),n={id:nUid(),t:'',x:'',at:t,up:t};save(cur,{[f]:[...v[f],n]});nid=n.id;renderTab();$('#ntt')?.focus()}
     else if(a==='nopen'){nid=b.dataset.id;renderTab();window.scrollTo(0,0)}
     else if(a==='ndel'){if(!confirm('Delete this note?'))return;sd2.flush();const f=NK[tab];save(cur,{[f]:v[f].filter(x=>x.id!==nid)});nid=null;renderTab()}
@@ -1672,7 +1718,8 @@ const KI={
   dream:()=>'<span class="ico">'+ic('target',20)+'<svg class="ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L12 12M12 12h5M12 12V7"/></svg></span>',
   run:()=>ic('play',20),
   up:()=>ic('upc',20),
-  pend:()=>ic('clock',20)
+  pend:()=>ic('clock',20),
+  done:()=>ic('check',20)
 };
 const FLW=(c,o)=>'<span class="flw '+c+'" style="--o:'+o+'" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>';
 function buildBar(){
